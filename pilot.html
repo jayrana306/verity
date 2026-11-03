@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design-partner pilot — Verity</title>
+<meta name="description" content="Apply to pilot Verity and shape its templates, review flow and pricing.">
+<link rel="canonical" href="https://ambicuity.github.io/verity/pilot.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verity">
+<meta property="og:title" content="Design-partner pilot — Verity">
+<meta property="og:description" content="Apply to pilot Verity and shape its templates, review flow and pricing.">
+<meta property="og:url" content="https://ambicuity.github.io/verity/pilot.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#f5f5f7">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23007AFF%22/%3E%3Cg stroke=%22white%22 stroke-width=%224%22 stroke-linecap=%22round%22%3E%3Cpath d=%22M20 28v8M28 20v24M36 16v32M44 26v12%22/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<nav class="nav" aria-label="Main"><div class="nav__bar"><a class="brand" href="index.html"><span class="brand__dot" aria-hidden="true"></span>Verity</a><div class="nav__links"><a href="product.html">How it works</a><a href="trust.html">Trust</a><a href="pricing.html">Pricing</a><a href="index.html">Prototype</a></div><a class="btn btn--ink btn--sm" href="pilot.html">Join the pilot</a></div></nav>
+<main id="main">
+<header class="hero"><div class="hero__inner"><div class="eyebrow">Design-partner pilot</div><h1>Help build documentation you can sign.</h1><p class="lede">We’re recruiting a small group of doctors, therapists, lawyers and advisors to pilot Verity and shape its templates, review flow and pricing.</p></div></header><section class="section"><div class="grid grid--2"><div class="card"><h3>What to expect</h3><ul class="list"><li><span><b>Early access</b> to Verity on Mac and iPhone as the production build lands.</span></li><li><span><b>Templates for your practice</b> — we encode your documentation standards together.</span></li><li><span><b>A direct line to the team.</b> Your feedback decides what ships next.</span></li><li><span><b>Safe by design.</b> Pilots start with synthetic or properly authorized data only.</span></li></ul></div>
+<form class="form card" id="pilot-form" novalidate>
+  <div class="field">
+    <label for="f-name">Full name</label>
+    <input id="f-name" name="name" autocomplete="name" required maxlength="100">
+    <div class="field__error" id="e-name" aria-live="polite"></div>
+  </div>
+  <div class="field">
+    <label for="f-email">Work email</label>
+    <input id="f-email" name="email" type="email" autocomplete="email" required maxlength="200">
+    <div class="field__error" id="e-email" aria-live="polite"></div>
+  </div>
+  <div class="field">
+    <label for="f-profession">Profession</label>
+    <select id="f-profession" name="profession" required>
+      <option value="">Choose one</option>
+      <option>Medical</option><option>Therapy / behavioral health</option>
+      <option>Legal</option><option>Consulting / advisory</option><option>Other</option>
+    </select>
+    <div class="field__error" id="e-profession" aria-live="polite"></div>
+  </div>
+  <div class="field">
+    <label for="f-size">Practice size</label>
+    <select id="f-size" name="size">
+      <option>Just me</option><option>2–10 people</option><option>11–50 people</option><option>50+ people</option>
+    </select>
+    <div class="field__error"></div>
+  </div>
+  <div class="field field--full">
+    <label for="f-org">Practice or firm (optional)</label>
+    <input id="f-org" name="org" autocomplete="organization" maxlength="150">
+  </div>
+  <div class="field field--full">
+    <label for="f-notes">What takes the most time in your documentation today? (optional)</label>
+    <textarea id="f-notes" name="notes" maxlength="2000"></textarea>
+  </div>
+  <div class="field--full actions">
+    <button class="btn btn--ink" type="submit">Apply by email</button>
+  </div>
+  <p class="form__status" id="form-status" aria-live="polite">Submitting opens your email app with your answers filled in.
+  Prefer to write yourself? Email <a href="mailto:jayrana210005@gmail.com">jayrana210005@gmail.com</a>.</p>
+</form>
+</div></section>
+<script>
+(function () {
+  var TO = "jayrana210005@gmail.com";
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var form = document.getElementById("pilot-form");
+  if (!form) return;
+  function setError(id, msg) {
+    var input = document.getElementById("f-" + id);
+    var out = document.getElementById("e-" + id);
+    if (input) input.setAttribute("aria-invalid", msg ? "true" : "false");
+    if (out) out.textContent = msg;
+    return !msg;
+  }
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var d = new FormData(form);
+    var name = String(d.get("name") || "").trim();
+    var email = String(d.get("email") || "").trim();
+    var profession = String(d.get("profession") || "");
+    var ok = [
+      setError("name", name ? "" : "Please enter your name."),
+      setError("email", EMAIL_RE.test(email) ? "" : "Please enter a valid email address."),
+      setError("profession", profession ? "" : "Please choose a profession.")
+    ].every(Boolean);
+    if (!ok) {
+      var first = form.querySelector('[aria-invalid="true"]');
+      if (first) first.focus();
+      return;
+    }
+    var lines = [
+      "Name: " + name,
+      "Email: " + email,
+      "Profession: " + profession,
+      "Practice size: " + String(d.get("size") || ""),
+      "Practice / firm: " + String(d.get("org") || "").trim(),
+      "",
+      "Biggest documentation time sink:",
+      String(d.get("notes") || "").trim()
+    ];
+    var href = "mailto:" + TO +
+      "?subject=" + encodeURIComponent("Verity pilot application — " + name) +
+      "&body=" + encodeURIComponent(lines.join("\n"));
+    document.getElementById("form-status").textContent =
+      "Opening your email app… If nothing happens, email " + TO + " directly.";
+    window.location.href = href;
+  });
+})();
+</script>
+
+</main>
+<footer class="footer"><div class="footer__inner"><div class="footer__cols"><div class="footer__col"><a class="brand" href="index.html"><span class="brand__dot" aria-hidden="true"></span>Verity</a><div class="footer__tag">AI documentation for doctors, lawyers and therapists.</div></div><div class="footer__col"><div class="footer__title">Product</div><a href="product.html">How it works</a><a href="trust.html">Trust &amp; security</a><a href="pricing.html">Pricing</a></div><div class="footer__col"><div class="footer__title">Company</div><a href="company.html">About</a><a href="company.html#roadmap">Roadmap</a><a href="pilot.html">Design-partner pilot</a></div><div class="footer__col"><div class="footer__title">Resources</div><a href="index.html">Interactive prototype</a><a href="compare.html">Competitive analysis</a><a href="mailto:jayrana210005@gmail.com">jayrana210005@gmail.com</a></div></div><div class="footer__base"><span>© 2026 Verity</span><span>Prototype data is synthetic. Pricing is a pilot hypothesis.</span></div></div></footer>
+</body>
+</html>

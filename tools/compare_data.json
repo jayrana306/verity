@@ -1,0 +1,748 @@
+{
+ "segments": [
+  {
+   "seg": "Medical · enterprise",
+   "items": [
+    {
+     "name": "Abridge",
+     "price": "Enterprise",
+     "note": "Epic-centred ambient scribe. Strongest evidence-linking story; dual output of clinical note plus patient summary; expanding into coding review."
+    },
+    {
+     "name": "Dragon Copilot (formerly DAX)",
+     "price": "Enterprise",
+     "note": "Broadest enterprise EHR coverage (Epic, Oracle Health, Meditech) with Dragon dictation."
+    }
+   ]
+  },
+  {
+   "seg": "Medical · self-serve",
+   "items": [
+    {
+     "name": "Nabla",
+     "price": "Free tier · ~$119/mo",
+     "note": "Multilingual and telehealth-friendly; pre-charting, coding and decision support; many EHR integrations."
+    },
+    {
+     "name": "Heidi",
+     "price": "Free tier · paid plans",
+     "note": "Customizable templates, voice commands, adapts to clinician style; builds documents from audio, PDF, Word and images."
+    },
+    {
+     "name": "Freed",
+     "price": "$39–$119/mo",
+     "note": "Setup in minutes for solo and small clinics; browser-based EHR push; 14 languages."
+    }
+   ]
+  },
+  {
+   "seg": "Therapy",
+   "items": [
+    {
+     "name": "Mentalyc",
+     "price": "Subscription",
+     "note": "Each note builds on prior sessions; drafts treatment plans with SMART goals, tracks progress, flags risk, notes per group member; deletes audio once the note is ready."
+    },
+    {
+     "name": "Upheal",
+     "price": "Free tier · $39 flat",
+     "note": "Live and post-session notes, built-in consent flows, session analytics such as talk ratios, telehealth and EHR in one tool."
+    }
+   ]
+  },
+  {
+   "seg": "Legal",
+   "items": [
+    {
+     "name": "Clio Manage AI (formerly Duo)",
+     "price": "In Clio plans",
+     "note": "Practice-management AI: matter summaries, client emails, deadline extraction to calendar, time entries and billing narratives; tenant-isolated."
+    }
+   ]
+  },
+  {
+   "seg": "Financial advisors",
+   "items": [
+    {
+     "name": "Jump",
+     "price": "~$75–$100/advisor",
+     "note": "Meeting prep and follow-up, CRM sync (Wealthbox, Redtail, Salesforce), customizable templates with summary verification; its bot joins the call."
+    },
+    {
+     "name": "Zocks",
+     "price": "~$67–$80/user",
+     "note": "Never stores audio; extracts structured facts, fills forms, tracks consent, archives to compliance systems."
+    }
+   ]
+  }
+ ],
+ "added": [
+  {
+   "f": "Pre-session brief",
+   "who": "Nabla, Jump",
+   "how": "Before recording, Verity shows facts from approved records only — last values, open promises — each with its source document.",
+   "where": "Record → Session brief"
+  },
+  {
+   "f": "Participants & speaker labels",
+   "who": "Mentalyc, Upheal",
+   "how": "Name every participant before consent, add guests (family, interpreter). Labels carry into transcript and audit.",
+   "where": "Record → Participants"
+  },
+  {
+   "f": "Virtual-call capture & language",
+   "who": "Nabla, Upheal, Jump, Zocks",
+   "how": "Capture in person, from a call, by phone or upload. Calls are captured on the Mac without a bot joining; language is auto-detected or chosen.",
+   "where": "Record → Capture / Language"
+  },
+  {
+   "f": "Structured data & mapping",
+   "who": "Zocks, Jump",
+   "how": "Extracted fields, each with source and status, mapped to EHR / CRM / matter fields. Sent only after approval; undocumented fields are skipped.",
+   "where": "Review → Data"
+  },
+  {
+   "f": "Session comparison & talk time",
+   "who": "Upheal, Mentalyc",
+   "how": "Compares only values stated in both sessions — no inferred trends. Talk time is framed for self-review, not as a score.",
+   "where": "Review → Data"
+  },
+  {
+   "f": "Audit trail",
+   "who": "Zocks, Jump",
+   "how": "Consent, capture, AI draft, edits, verifications, addenda, approval and delivery — exportable.",
+   "where": "Review → Audit"
+  },
+  {
+   "f": "Dictated addendum",
+   "who": "Dragon Copilot, Heidi",
+   "how": "Add what you observed but didn’t say. Marked as dictated so it’s never mistaken for recorded evidence.",
+   "where": "Review → Evidence"
+  },
+  {
+   "f": "Translation of client-facing documents",
+   "who": "Abridge, Nabla, Heidi",
+   "how": "Patient summary in Spanish, with a warning that a qualified speaker should review it before sending.",
+   "where": "Review → Document (Patient Summary)"
+  },
+  {
+   "f": "Integrations & security center",
+   "who": "All",
+   "how": "Record systems per profession, botless video capture, calendar and tasks, plus a plain-language compliance panel.",
+   "where": "Configure → Integrations"
+  },
+  {
+   "f": "Learned preferences",
+   "who": "Heidi",
+   "how": "Suggests rules from your repeated corrections. Nothing changes until you add the rule to the template.",
+   "where": "Output Studio → Learned from your edits"
+  },
+  {
+   "f": "Profession-specific delivery",
+   "who": "Clio AI, Jump",
+   "how": "Legal gets a time entry and deadline on the calendar; medical gets tasks and a review visit; consulting gets Jira items.",
+   "where": "Review → Approve → Deliver"
+  }
+ ],
+ "standards": [
+  {
+   "src": "ICANotes",
+   "req": "Session details: date, start/end time, modality, client + second identifier, provider credentials, CPT",
+   "where": "DAP header grid · Therapy"
+  },
+  {
+   "src": "ICANotes",
+   "req": "Separate client report (quoted) from clinician observation; mental-status findings only when observed",
+   "where": "Data section · MSE flagged “Not documented”"
+  },
+  {
+   "src": "ICANotes",
+   "req": "Golden thread — name the treatment-plan goal addressed and progress",
+   "where": "Goals addressed + Goal 2 progress in Assessment"
+  },
+  {
+   "src": "ICANotes",
+   "req": "Same content in SOAP, DAP, BIRP, GIRP formats",
+   "where": "Review → Note format switcher"
+  },
+  {
+   "src": "ICANotes",
+   "req": "Pre-sign review checklist; objective, non-judgmental language",
+   "where": "Review → Checklist (incl. language scan)"
+  },
+  {
+   "src": "ICANotes",
+   "req": "Addendum with audit trail — never edit a finalized note; label late entries",
+   "where": "Signed notes read-only · late-entry addendum · Audit"
+  },
+  {
+   "src": "ICANotes",
+   "req": "Psychotherapy notes kept separate from progress notes",
+   "where": "Banner on DAP · Session Prep private"
+  },
+  {
+   "src": "CUNY Law",
+   "req": "MEMORANDUM heading: TO / FROM / DATE / RE; centered all-caps section titles",
+   "where": "Legal → Office Memo"
+  },
+  {
+   "src": "CUNY Law",
+   "req": "Question Presented (names jurisdiction, doesn’t assume the conclusion) → Brief Answer → Facts → Discussion (CRRACC) → Conclusion",
+   "where": "Office Memo sections; legal analysis left to the attorney"
+  },
+  {
+   "src": "CUNY Law",
+   "req": "Facts objective, favorable and unfavorable, chronological",
+   "where": "Facts incl. unconfirmed voicemail flagged as unfavorable"
+  },
+  {
+   "src": "ABA SOPs",
+   "req": "Potential-new-client screening: source, reason, prior counsel, goals, conflict check, documents to bring",
+   "where": "Record → Session brief (Legal)"
+  },
+  {
+   "src": "ABA SOPs",
+   "req": "Consultation checklist: facts, critical issues, fees, retainer, scope, process, chronology, known/unknown facts, witnesses & documents, review notes",
+   "where": "Live coverage chips while recording · Review → Checklist"
+  },
+  {
+   "src": "ABA SOPs",
+   "req": "Versioning, approval, monitoring and audit of procedures",
+   "where": "Output Studio draft → test → publish · version history · Audit"
+  }
+ ],
+ "diffs": [
+  {
+   "t": "One product, many professions.",
+   "d": "Competitors are vertical. Verity shares the capture and evidence engine, with separate templates and safety rules per profession."
+  },
+  {
+   "t": "Five explicit claim states.",
+   "d": "Source-linked, verified, needs review, explicitly denied, not documented. Approval is blocked until flagged items are resolved."
+  },
+  {
+   "t": "Templates behave like software.",
+   "d": "Draft → test against a sample session → validation report → publish a version. Published changes never alter approved documents."
+  },
+  {
+   "t": "No clinical decision support.",
+   "d": "Nabla offers it; we deliberately don’t. Verity documents what was said and doesn’t suggest diagnoses or legal conclusions."
+  },
+  {
+   "t": "Apple-native.",
+   "d": "Liquid Glass Mac app with an iPhone companion and Handoff, instead of a browser tab."
+  }
+ ],
+ "gaps": [
+  {
+   "t": "Financial advisor pack.",
+   "d": "Suitability language, risk-tolerance changes, beneficiary flags, and archiving to compliance systems (Jump/Zocks territory)."
+  },
+  {
+   "t": "Group and couples notes.",
+   "d": "One note per member with separate access (Mentalyc has this)."
+  },
+  {
+   "t": "Native EHR embedding.",
+   "d": "Abridge and Dragon Copilot live inside Epic; we push approved documents into it."
+  },
+  {
+   "t": "Contradiction finder.",
+   "d": "Compare an intake interview with a later deposition (Clio Work)."
+  },
+  {
+   "t": "Revenue-cycle review.",
+   "d": "Pre-bill coding review is moving into scribes (Abridge)."
+  }
+ ],
+ "pricing": [
+  {
+   "seg": "Medical self-serve",
+   "range": "~$39–$150 / provider / mo",
+   "note": "Freed, Heidi, Nabla — free tiers are common"
+  },
+  {
+   "seg": "Medical enterprise",
+   "range": "~$250–$900+ / provider / mo",
+   "note": "Abridge, Dragon Copilot — annual contracts"
+  },
+  {
+   "seg": "Therapy",
+   "range": "Free – ~$39+ / mo",
+   "note": "Upheal flat $39; Mentalyc tiered"
+  },
+  {
+   "seg": "Financial advisors",
+   "range": "~$67–$100 / user / mo",
+   "note": "Zocks, Jump"
+  },
+  {
+   "seg": "Verity proposal",
+   "range": "$29 / $79 / $199+",
+   "note": "Starter / Professional / Team, minute quotas"
+  }
+ ],
+ "sources": [
+  {
+   "t": "Keragon — 10 Best AI Medical Scribes 2026",
+   "u": "https://www.keragon.com/blog/best-ai-medical-scribe"
+  },
+  {
+   "t": "Freed — Best AI Scribes 2026",
+   "u": "https://www.getfreed.ai/resources/best-ai-scribes"
+  },
+  {
+   "t": "Twofold — Best AI Scribe Tools 2026",
+   "u": "https://www.trytwofold.com/blog/best-ai-scribe"
+  },
+  {
+   "t": "DeepCura — 15 Best AI Medical Scribes",
+   "u": "https://www.deepcura.com/resources/compare/best-ai-medical-scribes"
+  },
+  {
+   "t": "Mentalyc — Best therapy note-taking apps",
+   "u": "https://www.mentalyc.com/blog/best-note-taking-app-for-therapists"
+  },
+  {
+   "t": "Mentalyc — Upheal review 2026",
+   "u": "https://www.mentalyc.com/blog/upheal-reviews"
+  },
+  {
+   "t": "Freed — Note-taking software for psychologists",
+   "u": "https://www.getfreed.ai/resources/best-note-taking-software-therapists"
+  },
+  {
+   "t": "Clio — AI legal transcription",
+   "u": "https://www.clio.com/resources/ai-for-lawyers/ai-legal-transcription/"
+  },
+  {
+   "t": "Tools for Humans — Clio review 2026",
+   "u": "https://www.toolsforhumans.ai/ai-tools/clio"
+  },
+  {
+   "t": "Income Laboratory — AI tools for financial advisors 2026",
+   "u": "https://incomelaboratory.com/best-ai-tools-for-financial-advisors-2026/"
+  },
+  {
+   "t": "Voibe — AI note takers for financial advisors",
+   "u": "https://www.getvoibe.com/resources/best-ai-meeting-note-taker-for-financial-advisors/"
+  },
+  {
+   "t": "Milemarker — AI notetakers for advisors",
+   "u": "https://www.milemarker.co/resources/guides/top-ai-notetakers-financial-advisors"
+  },
+  {
+   "t": "ICANotes — Mental health progress notes: examples & templates",
+   "u": "https://www.icanotes.com/2022/09/08/how-to-write-progress-notes/"
+  },
+  {
+   "t": "CUNY School of Law — Drafting a law office memorandum",
+   "u": "https://www.law.cuny.edu/academics/academic-resources-support/legal-writing-center/student-resources/drafting-a-law-office-memorandum/"
+  },
+  {
+   "t": "ABA Law Practice — Practice precision with SOPs",
+   "u": "https://www.americanbar.org/groups/law_practice/resources/law-practice-magazine/2025/may-june-2025/practice-precision-with-sops/"
+  }
+ ],
+ "matrix": {
+  "cols": [
+   "Verity v3",
+   "Abridge",
+   "Dragon Copilot",
+   "Nabla",
+   "Heidi",
+   "Freed",
+   "Mentalyc",
+   "Upheal",
+   "Clio AI",
+   "Jump",
+   "Zocks"
+  ],
+  "rows": [
+   {
+    "name": "Evidence linked to transcript",
+    "on": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Explicit “not documented” / denied states",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Several documents from one recording",
+    "on": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     true,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Patient / client-facing summary",
+    "on": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     true,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Custom templates",
+    "on": [
+     true,
+     false,
+     false,
+     true,
+     true,
+     false,
+     true,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Template from uploaded form",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Template versioning, test & publish",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Learns style from your edits",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Pre-session brief / pre-charting",
+    "on": [
+     true,
+     false,
+     false,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true,
+     false
+    ]
+   },
+   {
+    "name": "Continuity across sessions",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true,
+     true,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Treatment plans & goal progress",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true,
+     true,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Coding suggestions",
+    "on": [
+     true,
+     true,
+     false,
+     true,
+     false,
+     false,
+     true,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Multilingual capture & translation",
+    "on": [
+     true,
+     true,
+     false,
+     true,
+     true,
+     true,
+     false,
+     true,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Virtual-call capture",
+    "on": [
+     true,
+     false,
+     false,
+     true,
+     false,
+     false,
+     false,
+     true,
+     false,
+     true,
+     true
+    ]
+   },
+   {
+    "name": "No-audio-stored mode",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true,
+     false,
+     false,
+     false,
+     true
+    ]
+   },
+   {
+    "name": "Structured data extraction / form fill",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true
+    ]
+   },
+   {
+    "name": "Push to EHR / CRM / matter system",
+    "on": [
+     true,
+     true,
+     true,
+     true,
+     false,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   {
+    "name": "Deadline & task extraction",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true,
+     true,
+     false
+    ]
+   },
+   {
+    "name": "Time entries & billing narratives",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Recording consent workflow & logs",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true,
+     false,
+     false,
+     true
+    ]
+   },
+   {
+    "name": "Audit trail & archiving",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true,
+     true
+    ]
+   },
+   {
+    "name": "Dictated addenda / voice commands",
+    "on": [
+     true,
+     false,
+     true,
+     false,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Session analytics (talk time)",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     true,
+     false,
+     false,
+     false
+    ]
+   },
+   {
+    "name": "Several professions in one product",
+    "on": [
+     true,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ]
+   }
+  ]
+ }
+}
