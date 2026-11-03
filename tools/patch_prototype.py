@@ -71,6 +71,9 @@ def patch_template(tpl: str) -> str:
     if 'class="vnav"' in tpl:
         raise SystemExit("template already patched — pass the original export, not index.html")
     tpl = _replace_once(tpl, "<html><head>", '<html lang="en"><head>', "template html tag")
+    # Icon in the template's own <head>, so the rewritten document never falls back to /favicon.ico.
+    tpl = _replace_once(tpl, '<html lang="en"><head>', '<html lang="en"><head>\n<link rel="icon" href="' + FAVICON + '">',
+                        "template head icon")
     tpl = tpl.replace(f"mailto:{PLACEHOLDER_EMAIL}", f"mailto:{CONTACT_EMAIL}")
     tpl = tpl.replace(PLACEHOLDER_EMAIL, CONTACT_EMAIL)
     tpl = _replace_once(tpl, 'href="prototype.html"', 'href="index.html"', "prototype.html link")
