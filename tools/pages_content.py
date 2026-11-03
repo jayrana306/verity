@@ -149,10 +149,18 @@ def _plan_card(name, price, per, who, features, featured) -> str:
     feats = "".join(f"<li><span>{f}</span></li>" for f in features)
     badge = '<span class="tag tag--blue">For most professionals</span>' if featured else ""
     cls = "card card--feature" if featured else "card"
+    if name == "Enterprise":
+        href = f"mailto:{CONTACT_EMAIL}?subject=Verity%20Enterprise"
+        label = "Contact us"
+    else:
+        href = f"pilot.html?plan={name}#apply"
+        label = f"Pilot {name}"
+    btn = "btn btn--ink" if featured else "btn"
     return (
         f'<article class="{cls}">{badge}<h3>{name}</h3>'
         f'<div class="price">{price}<small>{per}</small></div><p>{who}</p>'
-        f'<ul class="list">{feats}</ul></article>'
+        f'<ul class="list">{feats}</ul>'
+        f'<a class="{btn} plan__cta" href="{href}">{label}</a></article>'
     )
 
 

@@ -4,6 +4,7 @@ from html import escape
 
 SITE_URL = "https://ambicuity.github.io/verity/"
 CONTACT_EMAIL = "jayrana210005@gmail.com"
+OG_IMAGE = SITE_URL + "assets/og.png"
 
 FAVICON = (
     "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E"
@@ -38,17 +39,43 @@ FOOTER_COLUMNS = (
 )
 
 
-def _nav(current: str) -> str:
+MENU_ICON = (
+    '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">'
+    '<path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+)
+
+
+def nav_links_html(current: str, extra_class: str = "") -> str:
+    """Desktop links; reused by the prototype patch so both navs match."""
     current_attr = ' aria-current="page"'
-    links = "".join(
-        f'<a href="{href}"{current_attr if href == current else ""}>{label}</a>'
+    return "".join(
+        f'<a href="{href}"{current_attr if href == current else ""}{extra_class}>{label}</a>'
         for href, label in NAV_LINKS
     )
+
+
+def mobile_menu_html(current: str) -> str:
+    """Disclosure menu for narrow screens. <details> works without JavaScript."""
+    current_attr = ' aria-current="page"'
+    items = "".join(
+        f'<a href="{href}"{current_attr if href == current else ""}>{label}</a>'
+        for href, label in NAV_LINKS + (("company.html", "About"), ("compare.html", "Competitive analysis"))
+    )
+    return (
+        '<details class="menu"><summary class="menu__btn" aria-label="Menu">'
+        f"{MENU_ICON}</summary>"
+        f'<div class="menu__panel">{items}</div></details>'
+    )
+
+
+def _nav(current: str) -> str:
     return (
         '<nav class="nav" aria-label="Main"><div class="nav__bar">'
-        '<a class="brand" href="index.html"><span class="brand__dot" aria-hidden="true"></span>Verity</a>'
-        f'<div class="nav__links">{links}</div>'
-        '<a class="btn btn--ink btn--sm" href="pilot.html">Join the pilot</a>'
+        '<a class="brand" href="index.html" translate="no"><span class="brand__dot" aria-hidden="true"></span>Verity</a>'
+        f'<div class="nav__links">{nav_links_html(current)}</div>'
+        '<div class="nav__end">'
+        '<a class="btn btn--ink btn--sm" href="pilot.html#apply">Join the pilot</a>'
+        f"{mobile_menu_html(current)}</div>"
         "</div></nav>"
     )
 
@@ -62,7 +89,7 @@ def _footer() -> str:
     )
     return (
         '<footer class="footer"><div class="footer__inner"><div class="footer__cols">'
-        '<div class="footer__col"><a class="brand" href="index.html">'
+        '<div class="footer__col"><a class="brand" href="index.html" translate="no">'
         '<span class="brand__dot" aria-hidden="true"></span>Verity</a>'
         '<div class="footer__tag">AI documentation for doctors, lawyers and therapists.</div></div>'
         f"{cols}</div>"
@@ -92,10 +119,15 @@ def render_page(*, filename: str, title: str, description: str, body: str,
 <meta property="og:title" content="{full_title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{OG_IMAGE}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{OG_IMAGE}">
 <meta name="theme-color" content="#f5f5f7">
 <link rel="icon" href="{FAVICON}">
 <link rel="stylesheet" href="assets/site.css">
+<script src="assets/site.js" defer></script>
 {extra_head}</head>
 <body>
 <a class="skip" href="#main">Skip to content</a>

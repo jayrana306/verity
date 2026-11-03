@@ -31,15 +31,17 @@ def _form() -> str:
     <p class="small muted">Takes about a minute. We reply within a few days.</p>
   </div>
   <form id="pilot-form" novalidate>
+    <input type="hidden" name="plan" id="f-plan" value="">
+    <p class="plan-pill" id="plan-pill" hidden>Interested in the <b id="plan-name"></b> plan · <a href="pricing.html">change</a></p>
     <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
     <div class="field">
       <label for="f-name">Full name</label>
-      <input id="f-name" name="name" autocomplete="name" required maxlength="100">
+      <input id="f-name" name="name" autocomplete="name" required maxlength="100" placeholder="Jane Doe…">
       <div class="field__error" id="e-name" aria-live="polite"></div>
     </div>
     <div class="field">
       <label for="f-email">Work email</label>
-      <input id="f-email" name="email" type="email" autocomplete="email" required maxlength="200">
+      <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" spellcheck="false" autocapitalize="off" required maxlength="200" placeholder="jane@practice.com…">
       <div class="field__error" id="e-email" aria-live="polite"></div>
     </div>
     <fieldset class="field">
@@ -53,11 +55,11 @@ def _form() -> str:
     </fieldset>
     <div class="field">
       <label for="f-org">Practice or firm <span class="muted">(optional)</span></label>
-      <input id="f-org" name="organization" autocomplete="organization" maxlength="150">
+      <input id="f-org" name="organization" autocomplete="organization" maxlength="150" placeholder="Riverside Family Clinic…">
     </div>
     <div class="field">
       <label for="f-notes">What takes the most time in your documentation today? <span class="muted">(optional)</span></label>
-      <textarea id="f-notes" name="notes" maxlength="2000" rows="3"></textarea>
+      <textarea id="f-notes" name="notes" maxlength="2000" rows="3" placeholder="e.g. Writing progress notes after hours…"></textarea>
     </div>
     <label class="check">
       <input type="checkbox" id="f-consent" name="consent" value="yes" required>
@@ -120,6 +122,7 @@ _SCRIPT = """
       practice_size: val("size") || "Not given",
       organization: val("organization") || "Not given",
       notes: val("notes") || "Not given",
+      plan_interest: val("plan") || "Not given",
       _subject: "Verity pilot application — " + val("name"),
       _replyto: val("email"),
       _template: "table",
@@ -129,7 +132,8 @@ _SCRIPT = """
   }
   function mailtoHref(d) {
     var body = ["Name: " + d.name, "Email: " + d.email, "Profession: " + d.profession,
-      "Practice size: " + d.practice_size, "Practice / firm: " + d.organization, "", d.notes].join("\\n");
+      "Practice size: " + d.practice_size, "Practice / firm: " + d.organization,
+      "Plan interest: " + d.plan_interest, "", d.notes].join("\\n");
     return "mailto:" + TO + "?subject=" + encodeURIComponent(d._subject) + "&body=" + encodeURIComponent(body);
   }
   function setBusy(busy) {
@@ -155,6 +159,20 @@ _SCRIPT = """
     a.textContent = "Email it to us instead";
     status.append(a, ".");
   }
+
+  (function prefill() {
+    var q = new URLSearchParams(location.search);
+    var plan = (q.get("plan") || "").replace(/[^A-Za-z ]/g, "").slice(0, 30);
+    var PLANS = ["Starter", "Professional", "Team"];
+    if (PLANS.indexOf(plan) >= 0) {
+      document.getElementById("f-plan").value = plan;
+      document.getElementById("plan-name").textContent = plan;
+      document.getElementById("plan-pill").hidden = false;
+    }
+    var prof = q.get("profession");
+    var radio = prof && form.querySelector('input[name="profession"][value="' + prof.replace(/[^A-Za-z]/g, "") + '"]');
+    if (radio) radio.checked = true;
+  })();
 
   form.addEventListener("submit", function (ev) {
     ev.preventDefault();
@@ -208,6 +226,14 @@ def _hero() -> str:
     )
 
 
+_APPLY_LABELS = {
+    "Medical": "Apply as a clinician",
+    "Therapy": "Apply as a therapist",
+    "Legal": "Apply as an attorney",
+    "Advisory": "Apply as an advisor",
+}
+
+
 def _who() -> str:
     cards = (
         ("tag--blue", "Medical", "Clinicians who want a SOAP note and patient summary they can sign without heavy editing."),
@@ -216,7 +242,8 @@ def _who() -> str:
         ("tag--orange", "Advisory", "Advisors and consultants who need meeting notes, follow-ups and tasks delivered."),
     )
     items = "".join(
-        f'<article class="card"><span class="tag {t}">{name}</span><p>{text}</p></article>'
+        f'<article class="card"><span class="tag {t}">{name}</span><p>{text}</p>'
+        f'<a class="card__link" href="pilot.html?profession={name}#apply">{_APPLY_LABELS[name]} →</a></article>'
         for t, name, text in cards
     )
     return (
