@@ -1,6 +1,6 @@
 # Verity website
 
-Live at **https://ambicuity.github.io/verity/** — served by GitHub Pages from the root of `main`.
+Live at **https://jayrana306.github.io/verity/** — served by GitHub Pages from the root of `main`.
 
 | File | What it is |
 |---|---|

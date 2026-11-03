@@ -2,7 +2,7 @@
 
 from html import escape
 
-SITE_URL = "https://ambicuity.github.io/verity/"
+SITE_URL = "https://jayrana306.github.io/verity/"
 CONTACT_EMAIL = "jayrana210005@gmail.com"
 OG_IMAGE = SITE_URL + "assets/og.png"
 
