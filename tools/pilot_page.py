@@ -1,202 +1,119 @@
 """Design-partner pilot page.
 
-GitHub Pages is static, so applications are POSTed to FormSubmit
-(https://formsubmit.co), which delivers them to CONTACT_EMAIL. The first
-submission triggers a one-time activation email that must be confirmed.
-If the request fails, the form falls back to a pre-filled mailto link.
+GitHub Pages is a static host, so there is no form: visitors apply by email.
+The "Email your application" button opens a pre-filled mailto link, and the
+address can be copied for people without a mail app. ?plan= and ?profession=
+(from the pricing page and profession cards) are added to the email.
 """
+
+import json
+from urllib.parse import quote
 
 from site_layout import CONTACT_EMAIL
 
-ENDPOINT = f"https://formsubmit.co/ajax/{CONTACT_EMAIL}"
-
-_PROFESSIONS = ("Medical", "Therapy", "Legal", "Advisory", "Other")
-_SIZES = ("Just me", "2–10", "11–50", "50+")
-
-
-def _chips(name: str, options, required: bool) -> str:
-    req = " required" if required else ""
-    return "".join(
-        f'<label class="chip"><input type="radio" name="{name}" value="{o}"{req if i == 0 else ""}>'
-        f"<span>{o}</span></label>"
-        for i, o in enumerate(options)
-    )
+SUBJECT = "Verity pilot application"
+BODY = (
+    "Hi Verity team,\n\n"
+    "I'd like to join the design-partner pilot.\n\n"
+    "Name:\n"
+    "Role / profession:\n"
+    "Practice or firm:\n"
+    "Practice size:\n"
+    "What takes the most time in my documentation today:\n\n"
+    "Thanks!"
+)
 
 
-def _form() -> str:
+def _mailto(subject: str = SUBJECT, body: str = BODY) -> str:
+    return f"mailto:{CONTACT_EMAIL}?subject={quote(subject)}&body={quote(body)}"
+
+
+MAIL_ICON = (
+    '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" '
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+    '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>'
+)
+
+
+def _apply_card() -> str:
     return f"""
 <div class="apply card" id="apply">
-  <div class="apply__head" id="apply-head">
-    <h2 class="apply__title">Apply to the pilot</h2>
-    <p class="small muted">Takes about a minute. We reply within a few days.</p>
+  <div class="apply__head">
+    <h2 class="apply__title">Apply by email</h2>
+    <p class="small muted">Send us a short note. We reply within a few days.</p>
   </div>
-  <form id="pilot-form" novalidate>
-    <input type="hidden" name="plan" id="f-plan" value="">
-    <p class="plan-pill" id="plan-pill" hidden>Interested in the <b id="plan-name"></b> plan · <a href="pricing.html">change</a></p>
-    <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <div class="field">
-      <label for="f-name">Full name</label>
-      <input id="f-name" name="name" autocomplete="name" required maxlength="100" placeholder="Jane Doe…">
-      <div class="field__error" id="e-name" aria-live="polite"></div>
-    </div>
-    <div class="field">
-      <label for="f-email">Work email</label>
-      <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" spellcheck="false" autocapitalize="off" required maxlength="200" placeholder="jane@practice.com…">
-      <div class="field__error" id="e-email" aria-live="polite"></div>
-    </div>
-    <fieldset class="field">
-      <legend>Profession</legend>
-      <div class="chips" id="f-profession">{_chips("profession", _PROFESSIONS, True)}</div>
-      <div class="field__error" id="e-profession" aria-live="polite"></div>
-    </fieldset>
-    <fieldset class="field">
-      <legend>Practice size</legend>
-      <div class="chips">{_chips("size", _SIZES, False)}</div>
-    </fieldset>
-    <div class="field">
-      <label for="f-org">Practice or firm <span class="muted">(optional)</span></label>
-      <input id="f-org" name="organization" autocomplete="organization" maxlength="150" placeholder="Riverside Family Clinic…">
-    </div>
-    <div class="field">
-      <label for="f-notes">What takes the most time in your documentation today? <span class="muted">(optional)</span></label>
-      <textarea id="f-notes" name="notes" maxlength="2000" rows="3" placeholder="e.g. Writing progress notes after hours…"></textarea>
-    </div>
-    <label class="check">
-      <input type="checkbox" id="f-consent" name="consent" value="yes" required>
-      <span>I agree to be contacted about the Verity pilot.</span>
-    </label>
-    <div class="field__error" id="e-consent" aria-live="polite"></div>
-    <button class="btn btn--ink apply__submit" type="submit" id="f-submit">Send application</button>
-    <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
-  </form>
-  <div class="success" id="pilot-success" hidden tabindex="-1">
-    <div class="success__icon" aria-hidden="true">✓</div>
-    <h2 class="apply__title">Application received</h2>
-    <p class="muted">Thanks, <span id="success-name"></span>. We’ll be in touch at
-    <b id="success-email"></b> within a few days.</p>
-    <a class="btn" href="index.html">Explore the prototype</a>
+  <p class="plan-pill" id="plan-pill" hidden>Interested in the <b id="plan-name"></b> plan · <a href="pricing.html">change</a></p>
+  <div class="include">
+    <div class="include__title">Tell us</div>
+    <ol class="include__list">
+      <li>Your name and role</li>
+      <li>Your profession and practice size</li>
+      <li>What takes the most time in your documentation today</li>
+    </ol>
   </div>
+  <a class="btn btn--ink apply__submit" id="apply-mail" href="{_mailto()}">{MAIL_ICON}Email your application</a>
+  <div class="address">
+    <span class="address__label">Or write to</span>
+    <div class="address__row">
+      <a class="address__email" href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a>
+      <button class="btn btn--sm" type="button" id="copy-email" data-email="{CONTACT_EMAIL}">Copy address</button>
+    </div>
+    <p class="form__status" id="copy-status" role="status" aria-live="polite"></p>
+  </div>
+  <p class="note">The button opens your email app with a template filled in. No email app set up? Copy the address and write from any account.</p>
 </div>
 """
 
 
-_SCRIPT = """
+_SCRIPT = r"""
 <script>
 (function () {
-  var ENDPOINT = "__ENDPOINT__";
   var TO = "__EMAIL__";
-  var EMAIL_RE = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/;
-  var TIMEOUT_MS = 15000;
-  var form = document.getElementById("pilot-form");
-  if (!form) return;
-  var submitBtn = document.getElementById("f-submit");
-  var status = document.getElementById("form-status");
+  var PLANS = ["Starter", "Professional", "Team"];
+  var PROFESSIONS = ["Medical", "Therapy", "Legal", "Advisory"];
+  var BODY = __BODY__;
 
-  function val(name) { return String(new FormData(form).get(name) || "").trim(); }
-  function setError(id, msg, focusEl) {
-    var out = document.getElementById("e-" + id);
-    var el = focusEl || document.getElementById("f-" + id);
-    if (el) el.setAttribute("aria-invalid", msg ? "true" : "false");
-    if (out) out.textContent = msg;
-    return msg ? el : null;
+  // Personalise the email from ?plan= and ?profession= (allow-listed values only).
+  var q = new URLSearchParams(location.search);
+  var plan = PLANS.indexOf(q.get("plan")) >= 0 ? q.get("plan") : "";
+  var prof = PROFESSIONS.indexOf(q.get("profession")) >= 0 ? q.get("profession") : "";
+  if (plan || prof) {
+    var subject = "Verity pilot application" + (prof ? " — " + prof : "") + (plan ? " (" + plan + " plan)" : "");
+    var body = BODY
+      .replace("Role / profession:", "Role / profession:" + (prof ? " " + prof : ""))
+      .replace("Thanks!", (plan ? "Plan I'm interested in: " + plan + "\n\n" : "") + "Thanks!");
+    document.getElementById("apply-mail").href =
+      "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
   }
-  function validate() {
-    var bad = [
-      setError("name", val("name") ? "" : "Please enter your name."),
-      setError("email", EMAIL_RE.test(val("email")) ? "" : "Please enter a valid email address."),
-      setError("profession", val("profession") ? "" : "Please choose a profession."),
-      setError("consent", document.getElementById("f-consent").checked ? "" : "Please confirm we can contact you.")
-    ].filter(Boolean);
-    if (bad.length) {
-      var first = bad[0].querySelector ? (bad[0].querySelector("input") || bad[0]) : bad[0];
-      first.focus();
-      return false;
+  if (plan) {
+    document.getElementById("plan-name").textContent = plan;
+    document.getElementById("plan-pill").hidden = false;
+  }
+
+  // Copy address, with a fallback for browsers without the async Clipboard API.
+  var btn = document.getElementById("copy-email");
+  var status = document.getElementById("copy-status");
+  function done(ok) {
+    status.textContent = ok ? "Address copied." : "Couldn’t copy — select the address above instead.";
+    btn.textContent = ok ? "Copied" : "Copy address";
+    if (ok) setTimeout(function () { btn.textContent = "Copy address"; status.textContent = ""; }, 2500);
+  }
+  function legacyCopy(text) {
+    var t = document.createElement("textarea");
+    t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+    document.body.appendChild(t); t.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    t.remove();
+    return ok;
+  }
+  btn.addEventListener("click", function () {
+    var text = btn.getAttribute("data-email");
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(legacyCopy(text)); });
+    } else {
+      done(legacyCopy(text));
     }
-    return true;
-  }
-  function payload() {
-    return {
-      name: val("name"),
-      email: val("email"),
-      profession: val("profession"),
-      practice_size: val("size") || "Not given",
-      organization: val("organization") || "Not given",
-      notes: val("notes") || "Not given",
-      plan_interest: val("plan") || "Not given",
-      _subject: "Verity pilot application — " + val("name"),
-      _replyto: val("email"),
-      _template: "table",
-      _captcha: "false",
-      _honey: val("_honey")
-    };
-  }
-  function mailtoHref(d) {
-    var body = ["Name: " + d.name, "Email: " + d.email, "Profession: " + d.profession,
-      "Practice size: " + d.practice_size, "Practice / firm: " + d.organization,
-      "Plan interest: " + d.plan_interest, "", d.notes].join("\\n");
-    return "mailto:" + TO + "?subject=" + encodeURIComponent(d._subject) + "&body=" + encodeURIComponent(body);
-  }
-  function setBusy(busy) {
-    submitBtn.disabled = busy;
-    submitBtn.textContent = busy ? "Sending…" : "Send application";
-    form.setAttribute("aria-busy", busy ? "true" : "false");
-  }
-  function showSuccess(d) {
-    document.getElementById("success-name").textContent = d.name.split(" ")[0];
-    document.getElementById("success-email").textContent = d.email;
-    form.hidden = true;
-    document.getElementById("apply-head").hidden = true;
-    var s = document.getElementById("pilot-success");
-    s.hidden = false;
-    s.focus();
-  }
-  function showFailure(d) {
-    status.className = "form__status form__status--error";
-    status.innerHTML = "";
-    status.append("We couldn’t send your application. ");
-    var a = document.createElement("a");
-    a.href = mailtoHref(d);
-    a.textContent = "Email it to us instead";
-    status.append(a, ".");
-  }
-
-  (function prefill() {
-    var q = new URLSearchParams(location.search);
-    var plan = (q.get("plan") || "").replace(/[^A-Za-z ]/g, "").slice(0, 30);
-    var PLANS = ["Starter", "Professional", "Team"];
-    if (PLANS.indexOf(plan) >= 0) {
-      document.getElementById("f-plan").value = plan;
-      document.getElementById("plan-name").textContent = plan;
-      document.getElementById("plan-pill").hidden = false;
-    }
-    var prof = q.get("profession");
-    var radio = prof && form.querySelector('input[name="profession"][value="' + prof.replace(/[^A-Za-z]/g, "") + '"]');
-    if (radio) radio.checked = true;
-  })();
-
-  form.addEventListener("submit", function (ev) {
-    ev.preventDefault();
-    status.textContent = "";
-    status.className = "form__status";
-    if (!validate()) return;
-    var d = payload();
-    if (d._honey) { showSuccess(d); return; }   // bot filled the hidden field
-    setBusy(true);
-    var ctrl = "AbortController" in window ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, TIMEOUT_MS);
-    fetch(ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify(d),
-      signal: ctrl ? ctrl.signal : undefined
-    })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
-      .then(function (res) {
-        var ok = res.ok && String(res.j.success) !== "false";
-        if (ok) { showSuccess(d); } else { console.error("Pilot form rejected", res.j); showFailure(d); }
-      })
-      .catch(function (err) { console.error("Pilot form failed", err); showFailure(d); })
-      .then(function () { clearTimeout(timer); setBusy(false); });
   });
 })();
 </script>
@@ -221,7 +138,7 @@ def _hero() -> str:
         f"{facts}"
         '<p class="small muted">Want to see it first? <a href="index.html">Try the interactive prototype</a>.</p>'
         "</div>"
-        f"{_form()}"
+        f"{_apply_card()}"
         "</div></header>"
     )
 
@@ -311,5 +228,5 @@ def _faq() -> str:
 
 
 def pilot_body() -> str:
-    script = _SCRIPT.replace("__ENDPOINT__", ENDPOINT).replace("__EMAIL__", CONTACT_EMAIL)
+    script = _SCRIPT.replace("__EMAIL__", CONTACT_EMAIL).replace("__BODY__", json.dumps(BODY))
     return _hero() + _who() + _how() + _exchange() + _faq() + script
