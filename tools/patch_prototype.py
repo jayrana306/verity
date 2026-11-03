@@ -61,6 +61,11 @@ def patch_template(tpl: str) -> str:
     tpl = tpl.replace(f"mailto:{PLACEHOLDER_EMAIL}", f"mailto:{CONTACT_EMAIL}")
     tpl = tpl.replace(PLACEHOLDER_EMAIL, CONTACT_EMAIL)
     tpl = _replace_once(tpl, 'href="prototype.html"', 'href="index.html"', "prototype.html link")
+    # The loader inserts the raw template into the DOM before the runtime binds it,
+    # so a literal src="{{ appUrl }}" makes the browser request that URL (404).
+    # The runtime strips the sc-camel- prefix and still binds it as the iframe's src.
+    tpl = _replace_once(tpl, '<iframe ref="{{ frameRef }}" src="{{ appUrl }}"',
+                        '<iframe ref="{{ frameRef }}" sc-camel-src="{{ appUrl }}"', "iframe src binding")
     tpl = _replace_once(tpl, "</helmet>", HEAD_TAGS + NAV_STYLE + "</helmet>", "</helmet>")
     tpl = _replace_once(tpl, '<a href="pilot.html" style="height:36px',
                         _nav_links_html() + '<a href="pilot.html" style="height:36px', "nav pilot button")
