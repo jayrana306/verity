@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Verity</title>
+<meta name="description" content="Verity — record once, get the documents your profession needs, every line traceable to what was said.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23007AFF%22/%3E%3Cg stroke=%22white%22 stroke-width=%224%22 stroke-linecap=%22round%22%3E%3Cpath d=%22M20 28v8M28 20v24M36 16v32M44 26v12%22/%3E%3C/g%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0">
+<style>
+html,body{margin:0;background:#e6e8ee}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button,input,textarea{font:inherit;color:inherit}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+[data-v]{--wall:radial-gradient(900px 700px at 15% 10%,oklch(0.88 0.06 250),transparent),radial-gradient(900px 700px at 85% 95%,oklch(0.9 0.06 45),transparent),oklch(0.93 0.02 260);--bg:#ffffff;--side:#f3f3f6;--card:#ffffff;--label:rgba(0,0,0,.86);--l2:rgba(60,60,67,.66);--l3:rgba(60,60,67,.4);--sep:rgba(60,60,67,.13);--fill:rgba(120,120,128,.09);--fill2:rgba(120,120,128,.17);--glass:rgba(248,248,250,.6);--glass2:rgba(255,255,255,.8);--edge:rgba(255,255,255,.8);--hi:rgba(255,255,255,.95);--gsh:rgba(0,0,0,.09);--accent:#007AFF;--red:#E5342B;--green:#248A3D;--orange:#C45A00;--indigo:#5856D6;--paper:#ffffff;--dim:rgba(0,0,0,.18)}
+[data-v][data-theme=dark]{--wall:radial-gradient(900px 700px at 15% 10%,oklch(0.32 0.07 260),transparent),radial-gradient(900px 700px at 85% 95%,oklch(0.3 0.06 30),transparent),oklch(0.18 0.02 260);--bg:#1e1e20;--side:#18181a;--card:#2a2a2d;--label:rgba(255,255,255,.92);--l2:rgba(235,235,245,.64);--l3:rgba(235,235,245,.36);--sep:rgba(255,255,255,.1);--fill:rgba(120,120,128,.18);--fill2:rgba(120,120,128,.3);--glass:rgba(42,42,46,.55);--glass2:rgba(48,48,52,.82);--edge:rgba(255,255,255,.14);--hi:rgba(255,255,255,.14);--gsh:rgba(0,0,0,.45);--accent:#0A84FF;--red:#FF453A;--green:#30D158;--orange:#FF9F0A;--indigo:#7D7AFF;--paper:#252528;--dim:rgba(0,0,0,.45)}
+[data-v][data-rt=on]{--glass:var(--side);--glass2:var(--card)}
+@keyframes vpulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes vspin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div data-v="1" data-theme="{{ theme }}" data-rt="{{ rt }}" style="min-height:100vh;background:var(--wall);padding:48px 64px 80px;color:var(--label);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;">
+<div style="display:flex;gap:56px;align-items:flex-start;width:max-content;">
+
+<div style="display:flex;flex-direction:column;gap:14px;">
+<div style="display:flex;align-items:baseline;gap:10px;font-size:13px;color:var(--l2);"><span style="font-weight:600;color:var(--label);">Verity for Mac</span><span>macOS 26 · Liquid Glass</span></div>
+
+<div style="position:relative;width:1280px;height:820px;border-radius:26px;background:var(--bg);overflow:hidden;box-shadow:0 0 0 0.5px rgba(0,0,0,.25),0 30px 80px rgba(0,0,0,.28),0 8px 20px rgba(0,0,0,.12);">
+
+<div style="position:absolute;inset:0;background:linear-gradient(90deg,var(--side) 0,var(--side) 246px,var(--bg) 246px);"></div>
+
+<div style="position:absolute;left:246px;top:0;right:{{ mainRight }};bottom:0;overflow:auto;padding:72px 40px 48px;">
+
+<sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+<div style="max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:28px;">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;">
+<div><div style="font-size:13px;color:var(--l2);font-weight:500;">Saturday, October 24</div><div style="font-size:28px;font-weight:700;letter-spacing:-0.4px;margin-top:2px;">Good morning, {{ p.first }}</div></div>
+<div style="display:flex;gap:8px;">
+<button onClick="{{ goUpload }}" style="height:32px;padding:0 14px;border-radius:16px;border:none;background:var(--fill2);font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:17px;">upload</span>Upload Audio</button>
+<button onClick="{{ goRecord }}" style="height:32px;padding:0 14px;border-radius:16px;border:none;background:var(--red);color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:17px;font-variation-settings:'FILL' 1;">mic</span>New Session</button>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;">
+<div style="display:flex;flex-direction:column;gap:10px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;">Today’s sessions</div>
+<div style="background:var(--card);border-radius:14px;border:0.5px solid var(--sep);overflow:hidden;">
+<sc-for list="{{ sessions }}" as="s" hint-placeholder-count="3">
+<div onClick="{{ s.onClick }}" style="display:flex;align-items:center;gap:14px;padding:12px 16px;border-top:{{ s.border }};cursor:pointer;" style-hover="background:var(--fill);">
+<div style="width:52px;font-size:13px;font-variant-numeric:tabular-nums;color:var(--l2);">{{ s.time }}</div>
+<div style="width:34px;height:34px;border-radius:17px;background:var(--fill2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--l2);">{{ s.ini }}</div>
+<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">{{ s.client }}</div><div style="font-size:12px;color:var(--l2);margin-top:1px;">{{ s.type }}</div></div>
+<div style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:10px;color:{{ s.color }};background:{{ s.bg }};">{{ s.status }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;">Drafts awaiting approval</div>
+<div style="background:var(--card);border-radius:14px;border:0.5px solid var(--sep);overflow:hidden;">
+<sc-for list="{{ drafts }}" as="d" hint-placeholder-count="3">
+<div onClick="{{ d.onClick }}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:{{ d.border }};cursor:pointer;" style-hover="background:var(--fill);">
+<span style="font-family:'Material Symbols Rounded';font-size:20px;color:var(--accent);">description</span>
+<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">{{ d.name }}</div><div style="font-size:12px;color:var(--l2);margin-top:1px;">{{ d.client }}</div></div>
+<div style="font-size:12px;color:{{ d.color }};font-weight:500;">{{ d.flags }}</div>
+<span style="font-family:'Material Symbols Rounded';font-size:16px;color:var(--l3);">chevron_right</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;">Follow-ups you promised</div>
+<div style="background:var(--card);border-radius:14px;border:0.5px solid var(--sep);overflow:hidden;">
+<sc-for list="{{ actions }}" as="a" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:{{ a.border }};">
+<span onClick="{{ a.onToggle }}" style="font-family:'Material Symbols Rounded';font-size:20px;cursor:pointer;color:{{ a.ic }};font-variation-settings:'FILL' {{ a.fill }};">{{ a.icon }}</span>
+<div style="flex:1;font-size:13px;text-decoration:{{ a.deco }};color:{{ a.color }};">{{ a.text }}</div>
+<div onClick="{{ a.onSource }}" style="font-size:12px;color:var(--accent);cursor:pointer;font-variant-numeric:tabular-nums;">Said at {{ a.time }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isRecord }}">
+<div style="max-width:760px;margin:0 auto;">
+<sc-if value="{{ recConsent }}">
+<div style="display:flex;flex-direction:column;gap:22px;">
+<div style="display:flex;align-items:center;gap:14px;">
+<div style="width:44px;height:44px;border-radius:22px;background:var(--fill2);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--l2);">{{ p.ini }}</div>
+<div style="flex:1;"><div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;">{{ p.client }}</div><div style="font-size:13px;color:var(--l2);">{{ p.session }} · with {{ p.pro }}</div></div>
+<div style="font-size:12px;color:var(--l2);display:flex;align-items:center;gap:6px;"><span style="font-family:'Material Symbols Rounded';font-size:16px;">history</span>{{ p.prior }}</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;display:flex;justify-content:space-between;"><span>Consent verification</span><span style="color:{{ consentColor }};">{{ consentLabel }}</span></div>
+<div style="background:var(--card);border-radius:14px;border:0.5px solid var(--sep);overflow:hidden;">
+<sc-for list="{{ consent }}" as="c" hint-placeholder-count="3">
+<div onClick="{{ c.onToggle }}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:{{ c.border }};cursor:pointer;">
+<span style="font-family:'Material Symbols Rounded';font-size:22px;color:{{ c.ic }};font-variation-settings:'FILL' {{ c.fill }};">{{ c.icon }}</span>
+<div style="flex:1;"><div style="font-size:13px;font-weight:500;">{{ c.label }}</div><div style="font-size:12px;color:var(--l2);margin-top:1px;">{{ c.sub }}</div></div>
+</div>
+</sc-for>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:0.5px solid var(--sep);">
+<span style="font-family:'Material Symbols Rounded';font-size:22px;color:var(--l2);">voice_over_off</span>
+<div style="flex:1;"><div style="font-size:13px;font-weight:500;">No-audio mode</div><div style="font-size:12px;color:var(--l2);margin-top:1px;">Transcribe live, then discard the raw audio</div></div>
+<div onClick="{{ toggleNoAudio }}" style="width:38px;height:22px;border-radius:11px;background:{{ noAudioTrack }};position:relative;cursor:pointer;transition:background .2s;"><div style="position:absolute;top:2px;left:{{ noAudioKnob }};width:18px;height:18px;border-radius:9px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s;"></div></div>
+</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;">Generate from this recording</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;">
+<sc-for list="{{ outs }}" as="o" hint-placeholder-count="3">
+<div onClick="{{ o.onToggle }}" style="height:30px;padding:0 12px;border-radius:15px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};border:0.5px solid {{ o.border }};"><span style="font-family:'Material Symbols Rounded';font-size:16px;">{{ o.icon }}</span>{{ o.name }}</div>
+</sc-for>
+</div>
+<div style="font-size:12px;color:var(--l2);padding-left:4px;">One recording, one transcription — every selected document is generated from it.</div>
+</div>
+<div style="display:flex;justify-content:center;padding-top:8px;">
+<button onClick="{{ startRec }}" style="height:52px;padding:0 28px;border-radius:26px;border:none;font-size:15px;font-weight:600;display:flex;align-items:center;gap:10px;cursor:pointer;background:{{ startBg }};color:{{ startColor }};box-shadow:{{ startShadow }};"><span style="font-family:'Material Symbols Rounded';font-size:22px;font-variation-settings:'FILL' 1;">mic</span>{{ startLabel }}</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ recLive }}">
+<div style="display:flex;flex-direction:column;gap:24px;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:12px;">
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:{{ liveColor }};letter-spacing:0.4px;text-transform:uppercase;"><span style="width:8px;height:8px;border-radius:4px;background:{{ liveColor }};animation:{{ pulseAnim }};"></span>{{ liveLabel }}</div>
+<div style="font-size:56px;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-1px;">{{ timer }}</div>
+<div style="font-size:13px;color:var(--l2);">{{ p.client }} · {{ p.session }}{{ noAudioNote }}</div>
+</div>
+<div style="height:72px;display:flex;align-items:center;justify-content:center;gap:3px;">
+<sc-for list="{{ bars }}" as="b" hint-placeholder-count="56">
+<div style="width:4px;border-radius:2px;background:{{ b.c }};height:{{ b.h }}px;transition:height .12s;"></div>
+</sc-for>
+</div>
+<div style="display:flex;justify-content:center;gap:14px;">
+<button onClick="{{ addBookmark }}" title="Bookmark this moment" style="width:48px;height:48px;border-radius:24px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 4px 14px var(--gsh);display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:22px;">bookmark_add</span></button>
+<button onClick="{{ togglePause }}" style="width:48px;height:48px;border-radius:24px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 4px 14px var(--gsh);display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:24px;font-variation-settings:'FILL' 1;">{{ pauseIcon }}</span></button>
+<button onClick="{{ stopRec }}" style="height:48px;padding:0 22px;border-radius:24px;border:none;background:var(--red);color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:0 6px 18px color-mix(in srgb,var(--red) 35%,transparent);"><span style="font-family:'Material Symbols Rounded';font-size:20px;font-variation-settings:'FILL' 1;">stop</span>Stop &amp; Generate</button>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;display:flex;justify-content:space-between;"><span>Live transcript</span><span>{{ bmLabel }}</span></div>
+<div style="background:var(--card);border-radius:14px;border:0.5px solid var(--sep);padding:6px 0;">
+<sc-for list="{{ liveLines }}" as="l" hint-placeholder-count="2">
+<div style="display:grid;grid-template-columns:44px 92px minmax(0,1fr);gap:10px;padding:8px 16px;font-size:13px;line-height:1.45;">
+<span style="color:var(--l3);font-variant-numeric:tabular-nums;">{{ l.time }}</span><span style="font-weight:600;color:{{ l.color }};">{{ l.who }}</span><span style="text-wrap:pretty;">{{ l.text }}</span>
+</div>
+</sc-for>
+<div style="padding:8px 16px 8px 162px;font-size:13px;color:var(--l3);">Listening…</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ recProc }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:26px;padding-top:110px;">
+<div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;">Understanding the session</div>
+<div style="width:420px;background:var(--card);border-radius:14px;border:0.5px solid var(--sep);overflow:hidden;">
+<sc-for list="{{ procSteps }}" as="ps" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:{{ ps.border }};">
+<span style="font-family:'Material Symbols Rounded';font-size:20px;color:{{ ps.color }};animation:{{ ps.anim }};font-variation-settings:'FILL' 1;">{{ ps.icon }}</span>
+<span style="font-size:13px;color:{{ ps.tc }};">{{ ps.label }}</span>
+</div>
+</sc-for>
+</div>
+<div style="font-size:12px;color:var(--l2);">Nothing is final until you approve it.</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDoc }}">
+<div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:18px;">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+<div style="display:flex;padding:2px;border-radius:9px;background:var(--fill2);gap:2px;">
+<sc-for list="{{ docTabs }}" as="dt" hint-placeholder-count="3">
+<div onClick="{{ dt.onClick }}" style="height:26px;padding:0 14px;border-radius:7px;display:flex;align-items:center;font-size:13px;font-weight:500;cursor:pointer;background:{{ dt.bg }};box-shadow:{{ dt.sh }};">{{ dt.name }}</div>
+</sc-for>
+</div>
+<div style="display:flex;padding:2px;border-radius:9px;background:var(--fill2);gap:2px;">
+<sc-for list="{{ viewTabs }}" as="vt" hint-placeholder-count="2">
+<div onClick="{{ vt.onClick }}" style="height:26px;padding:0 14px;border-radius:7px;display:flex;align-items:center;font-size:13px;font-weight:500;cursor:pointer;background:{{ vt.bg }};box-shadow:{{ vt.sh }};">{{ vt.label }}</div>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{ isFinal }}">
+<div style="background:var(--paper);border-radius:6px;box-shadow:0 0 0 0.5px var(--sep),0 12px 40px var(--gsh);padding:56px 64px 48px;display:flex;flex-direction:column;gap:22px;min-height:860px;font-family:'New York','Iowan Old Style',Georgia,serif;">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1.5px solid var(--label);padding-bottom:14px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;">
+<div><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--l2);">{{ p.pro }}</div><div style="font-size:26px;font-weight:700;letter-spacing:-0.3px;margin-top:4px;">{{ docName }}</div></div>
+<div style="text-align:right;font-size:11px;color:var(--l2);line-height:1.6;">October 24, 2026<br>{{ p.dur }} recording</div>
+</div>
+<div style="display:grid;grid-template-columns:auto 1fr;gap:4px 18px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;">
+<span style="color:var(--l2);">Client</span><span style="font-weight:600;">{{ p.client }}</span>
+<span style="color:var(--l2);">Session</span><span>{{ p.session }}</span>
+</div>
+<sc-for list="{{ finalSecs }}" as="fs" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:6px;">
+<div style="font-size:12px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;">{{ fs.title }}</div>
+<sc-for list="{{ fs.items }}" as="it"><div style="display:flex;gap:10px;font-size:15px;line-height:1.55;color:{{ it.color }};font-style:{{ it.fs }};"><span>{{ it.mark }}</span><span style="flex:1;text-wrap:pretty;">{{ it.text }}</span></div></sc-for>
+</div>
+</sc-for>
+<div style="margin-top:auto;border-top:0.5px solid var(--sep);padding-top:14px;font-size:12px;color:{{ signColor }};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;">{{ signLine }}</div>
+</div>
+</sc-if>
+<sc-if value="{{ isEvidence }}" hint-placeholder-val="{{ true }}">
+<div style="background:var(--paper);border-radius:16px;border:0.5px solid var(--sep);box-shadow:0 1px 3px var(--gsh);padding:32px 40px 36px;display:flex;flex-direction:column;gap:22px;">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
+<div><div style="font-size:24px;font-weight:700;letter-spacing:-0.3px;">{{ docName }}</div><div style="font-size:13px;color:var(--l2);margin-top:4px;">{{ p.client }} · {{ p.session }} · {{ p.dur }} recording</div></div>
+<div style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:11px;white-space:nowrap;color:{{ docBadgeColor }};background:{{ docBadgeBg }};">{{ docBadge }}</div>
+</div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--l2);padding:10px 14px;border-radius:10px;background:var(--fill);">
+<sc-for list="{{ legend }}" as="lg" hint-placeholder-count="4"><span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:4px;background:{{ lg.color }};"></span>{{ lg.label }} <b style="color:var(--label);font-weight:600;">{{ lg.n }}</b></span></sc-for>
+</div>
+<sc-for list="{{ sections }}" as="sec" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:4px;">
+<div style="font-size:15px;font-weight:700;margin-bottom:4px;">{{ sec.title }}</div>
+<sc-for list="{{ sec.claims }}" as="cl" hint-placeholder-count="2">
+<div onClick="{{ cl.onClick }}" style="display:flex;align-items:flex-start;gap:10px;padding:7px 10px;margin:0 -10px;border-radius:8px;cursor:pointer;background:{{ cl.rowBg }};" style-hover="background:var(--fill);">
+<span style="width:6px;height:6px;border-radius:3px;margin-top:7px;flex:none;background:{{ cl.color }};"></span>
+<span style="flex:1;font-size:14px;line-height:1.5;text-wrap:pretty;color:{{ cl.tc }};font-style:{{ cl.fs }};">{{ cl.text }}</span>
+<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:9px;white-space:nowrap;color:{{ cl.color }};background:{{ cl.bg }};">{{ cl.label }}</span>
+<span style="font-size:12px;width:38px;text-align:right;color:var(--accent);font-variant-numeric:tabular-nums;padding-top:1px;">{{ cl.time }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isAsk }}">
+<div style="max-width:640px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:18px;padding-bottom:80px;">
+<sc-if value="{{ chatEmpty }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:110px;text-align:center;">
+<div style="width:56px;height:56px;border-radius:16px;background:color-mix(in srgb,var(--accent) 14%,transparent);display:flex;align-items:center;justify-content:center;"><span style="font-family:'Material Symbols Rounded';font-size:30px;color:var(--accent);">forum</span></div>
+<div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;">Ask this session</div>
+<div style="font-size:13px;color:var(--l2);max-width:360px;text-wrap:pretty;">Answers come only from what was said in the recording, with timestamps you can check.</div>
+</div>
+</sc-if>
+<sc-for list="{{ chat }}" as="m" hint-placeholder-count="0">
+<div style="display:flex;justify-content:{{ m.justify }};">
+<div style="max-width:84%;padding:{{ m.pad }};border-radius:18px;font-size:14px;line-height:1.5;text-wrap:pretty;background:{{ m.bg }};color:{{ m.color }};">
+<div>{{ m.text }}</div>
+<sc-if value="{{ m.hasCites }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
+<sc-for list="{{ m.cites }}" as="ci"><span onClick="{{ ci.onClick }}" style="font-size:12px;font-weight:500;padding:3px 9px;border-radius:10px;background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums;"><span style="font-family:'Material Symbols Rounded';font-size:14px;">play_circle</span>{{ ci.time }} · {{ ci.who }}</span></sc-for>
+</div></sc-if>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{ thinking }}"><div style="font-size:13px;color:var(--l2);display:flex;align-items:center;gap:8px;"><span style="font-family:'Material Symbols Rounded';font-size:16px;animation:vspin 1s linear infinite;">progress_activity</span>Searching the transcript…</div></sc-if>
+<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+<sc-for list="{{ suggestions }}" as="sg" hint-placeholder-count="3">
+<div onClick="{{ sg.onClick }}" style="padding:7px 13px;border-radius:16px;font-size:13px;background:var(--fill);border:0.5px solid var(--sep);cursor:pointer;" style-hover="background:var(--fill2);">{{ sg.q }}</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isStudio }}">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;max-width:980px;margin:0 auto;">
+<div style="display:flex;flex-direction:column;gap:22px;">
+<div><div style="font-size:12px;color:var(--l2);font-weight:500;">Template name</div><input value="{{ tplName }}" onChange="{{ onTplName }}" style="margin-top:4px;width:100%;font-size:22px;font-weight:700;letter-spacing:-0.3px;border:none;background:transparent;outline:none;padding:0;"></div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;">Sections to generate</div>
+<div style="background:var(--card);border-radius:14px;border:0.5px solid var(--sep);overflow:hidden;">
+<sc-for list="{{ stSecs }}" as="ss" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:{{ ss.border }};">
+<span onClick="{{ ss.onUp }}" title="Move up" style="font-family:'Material Symbols Rounded';font-size:18px;color:var(--l3);cursor:pointer;">drag_indicator</span>
+<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;color:{{ ss.tc }};">{{ ss.name }}</div><div style="font-size:12px;color:var(--l2);margin-top:1px;">{{ ss.desc }}</div></div>
+<div onClick="{{ ss.onToggle }}" style="width:38px;height:22px;border-radius:11px;background:{{ ss.track }};position:relative;cursor:pointer;transition:background .2s;flex:none;"><div style="position:absolute;top:2px;left:{{ ss.knob }};width:18px;height:18px;border-radius:9px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s;"></div></div>
+</div>
+</sc-for>
+<div onClick="{{ addSection }}" style="display:flex;align-items:center;gap:8px;padding:11px 14px;border-top:0.5px solid var(--sep);font-size:13px;color:var(--accent);cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:18px;">add_circle</span>Add Section</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;">Writing style</div>
+<div style="display:flex;padding:2px;border-radius:9px;background:var(--fill2);gap:2px;">
+<sc-for list="{{ styleOpts }}" as="so" hint-placeholder-count="3"><div onClick="{{ so.onClick }}" style="flex:1;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;cursor:pointer;background:{{ so.bg }};box-shadow:{{ so.sh }};">{{ so.label }}</div></sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;">Custom instructions</div>
+<textarea value="{{ instr }}" onChange="{{ onInstr }}" rows="3" style="width:100%;resize:none;border-radius:12px;border:0.5px solid var(--sep);background:var(--card);padding:12px 14px;font-size:13px;line-height:1.5;outline:none;"></textarea>
+</div>
+<div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:1px dashed var(--fill2);background:var(--fill);">
+<span style="font-family:'Material Symbols Rounded';font-size:28px;color:var(--accent);">upload_file</span>
+<div style="flex:1;"><div style="font-size:13px;font-weight:600;">Start from an existing form</div><div style="font-size:12px;color:var(--l2);margin-top:1px;">Drop an anonymized Word or PDF template — Verity proposes sections for you to review.</div></div>
+<button style="height:28px;padding:0 12px;border-radius:14px;border:none;background:var(--fill2);font-size:13px;font-weight:500;cursor:pointer;">Choose File…</button>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;position:sticky;top:0;align-self:start;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);padding-left:4px;display:flex;justify-content:space-between;"><span>Preview</span><span style="font-weight:500;">{{ styleLabel }}</span></div>
+<div style="background:var(--paper);border-radius:14px;border:0.5px solid var(--sep);box-shadow:0 8px 30px var(--gsh);padding:22px;display:flex;flex-direction:column;gap:14px;max-height:600px;overflow:auto;">
+<div style="border-bottom:0.5px solid var(--sep);padding-bottom:10px;"><div style="font-size:15px;font-weight:700;">{{ tplName }}</div><div style="font-size:11px;color:var(--l2);margin-top:2px;">{{ previewMeta }}</div></div>
+<sc-for list="{{ preview }}" as="pv" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:4px;">
+<div style="font-size:12px;font-weight:700;">{{ pv.n }}. {{ pv.name }}</div>
+<sc-for list="{{ pv.items }}" as="it"><div style="display:flex;gap:6px;font-size:12px;line-height:1.45;color:{{ it.color }};font-style:{{ it.fs }};"><span>{{ it.mark }}</span><span style="flex:1;text-wrap:pretty;">{{ it.text }}</span><span style="color:var(--accent);font-size:10px;font-variant-numeric:tabular-nums;padding-top:2px;">{{ it.time }}</span></div></sc-for>
+</div>
+</sc-for>
+<div style="font-size:11px;color:var(--orange);border-top:0.5px solid var(--sep);padding-top:10px;">{{ previewSign }}</div>
+<div style="display:flex;gap:6px;">
+<sc-for list="{{ fmts }}" as="f"><span onClick="{{ f.onClick }}" style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:9px;cursor:pointer;background:{{ f.bg }};color:{{ f.color }};">{{ f.name }}</span></sc-for>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+
+<div style="position:absolute;left:246px;right:0;top:0;height:64px;background:linear-gradient(var(--bg) 35%,color-mix(in srgb,var(--bg) 0%,transparent));pointer-events:none;"></div>
+<div style="position:absolute;left:246px;right:12px;top:10px;height:44px;display:flex;align-items:center;gap:10px;padding-left:16px;">
+<div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;">{{ title }}</div><div style="font-size:11px;color:var(--l2);">{{ subtitle }}</div></div>
+<sc-if value="{{ isDoc }}">
+<div style="display:flex;height:36px;border-radius:18px;padding:0 4px;align-items:center;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 4px 16px var(--gsh);">
+<sc-for list="{{ exports }}" as="ex"><button onClick="{{ ex.onClick }}" style="height:28px;padding:0 10px;border:none;border-radius:14px;background:transparent;font-size:12px;font-weight:500;cursor:pointer;">{{ ex.name }}</button></sc-for>
+</div>
+<button onClick="{{ approve }}" style="height:36px;padding:0 16px;border-radius:18px;border:none;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;background:{{ approveBg }};color:{{ approveColor }};"><span style="font-family:'Material Symbols Rounded';font-size:18px;">{{ approveIcon }}</span>{{ approveLabel }}</button>
+</sc-if>
+<sc-if value="{{ isStudio }}">
+<button onClick="{{ saveTpl }}" style="height:36px;padding:0 16px;border-radius:18px;border:none;font-size:13px;font-weight:600;background:var(--accent);color:#fff;cursor:pointer;">Save Template</button>
+</sc-if>
+<sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:8px;height:36px;width:220px;padding:0 12px;border-radius:18px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 4px 16px var(--gsh);font-size:13px;color:var(--l3);"><span style="font-family:'Material Symbols Rounded';font-size:18px;">search</span>Search sessions</div>
+</sc-if>
+<button onClick="{{ toggleTheme }}" title="Appearance" style="width:36px;height:36px;border-radius:18px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 4px 16px var(--gsh);display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:19px;">{{ themeIcon }}</span></button>
+</div>
+
+<sc-if value="{{ hasInspector }}">
+<div style="position:absolute;top:64px;right:8px;bottom:8px;width:300px;border-radius:18px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 10px 30px var(--gsh);display:flex;flex-direction:column;overflow:hidden;">
+<sc-if value="{{ ev.show }}">
+<div style="padding:16px;border-bottom:0.5px solid var(--sep);display:flex;flex-direction:column;gap:10px;">
+<div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;font-weight:700;color:var(--l2);text-transform:uppercase;letter-spacing:0.5px;">Evidence</span><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:9px;color:{{ ev.color }};background:{{ ev.bg }};">{{ ev.label }}</span></div>
+<div style="font-size:13px;font-weight:600;line-height:1.4;">{{ ev.claim }}</div>
+<div style="font-size:12px;line-height:1.5;color:var(--l2);padding:8px 10px;border-radius:10px;background:var(--fill);text-wrap:pretty;">{{ ev.quote }}</div>
+<div style="display:flex;gap:6px;">
+<button onClick="{{ ev.onConfirm }}" style="flex:1;height:28px;border-radius:14px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:600;cursor:pointer;">Mark Confirmed</button>
+<button onClick="{{ ev.onRemove }}" style="flex:1;height:28px;border-radius:14px;border:none;background:var(--fill2);font-size:12px;font-weight:500;cursor:pointer;">{{ ev.removeLabel }}</button>
+</div>
+</div>
+</sc-if>
+<div style="padding:14px 16px 6px;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;font-weight:700;color:var(--l2);text-transform:uppercase;letter-spacing:0.5px;">Transcript</span><span style="font-size:11px;color:var(--l2);font-variant-numeric:tabular-nums;">{{ p.dur }}</span></div>
+<div ref="{{ insRef }}" style="flex:1;overflow:auto;position:relative;padding:0 8px 12px;">
+<sc-for list="{{ tLines }}" as="tl" hint-placeholder-count="6">
+<div data-line="{{ tl.i }}" onClick="{{ tl.onClick }}" style="padding:8px;border-radius:10px;background:{{ tl.bg }};cursor:pointer;transition:background .25s;">
+<div style="display:flex;justify-content:space-between;font-size:11px;"><span style="font-weight:600;color:{{ tl.color }};">{{ tl.who }}</span><span style="color:var(--l3);font-variant-numeric:tabular-nums;">{{ tl.time }}</span></div>
+<div style="font-size:12px;line-height:1.45;margin-top:2px;text-wrap:pretty;">{{ tl.text }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isAsk }}">
+<div style="position:absolute;left:286px;right:356px;bottom:20px;display:flex;justify-content:center;">
+<div style="width:100%;max-width:640px;height:44px;border-radius:22px;border:0.5px solid var(--edge);background:var(--glass2);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 10px 30px var(--gsh);display:flex;align-items:center;padding:0 6px 0 16px;gap:8px;">
+<input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" placeholder="Ask about this session…" style="flex:1;border:none;background:transparent;outline:none;font-size:14px;">
+<button onClick="{{ send }}" style="width:32px;height:32px;border-radius:16px;border:none;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:20px;">arrow_upward</span></button>
+</div>
+</div>
+</sc-if>
+
+<div style="position:absolute;left:8px;top:8px;bottom:8px;width:230px;border-radius:18px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 6px 24px var(--gsh);display:flex;flex-direction:column;padding:14px 10px 10px;">
+<div style="display:flex;gap:8px;padding:2px 6px 0;"><span style="width:12px;height:12px;border-radius:6px;background:#FF5F57;"></span><span style="width:12px;height:12px;border-radius:6px;background:#FEBC2E;"></span><span style="width:12px;height:12px;border-radius:6px;background:#28C840;"></span></div>
+<div style="position:relative;margin:16px 0 12px;">
+<div onClick="{{ toggleMenu }}" style="display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;border-radius:17px;background:var(--fill);cursor:pointer;">
+<span style="font-family:'Material Symbols Rounded';font-size:18px;color:var(--accent);">{{ p.icon }}</span>
+<span style="flex:1;font-size:13px;font-weight:600;">{{ p.label }} Workspace</span>
+<span style="font-family:'Material Symbols Rounded';font-size:16px;color:var(--l2);">unfold_more</span>
+</div>
+<sc-if value="{{ menuOpen }}">
+<div style="position:absolute;top:40px;left:0;right:0;z-index:5;padding:5px;border-radius:14px;border:0.5px solid var(--edge);background:var(--glass2);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 12px 34px rgba(0,0,0,.22);">
+<sc-for list="{{ profMenu }}" as="pm" hint-placeholder-count="4">
+<div onClick="{{ pm.onClick }}" style="display:flex;align-items:center;gap:8px;height:30px;padding:0 9px;border-radius:9px;font-size:13px;cursor:pointer;" style-hover="background:var(--accent);color:#fff;">
+<span style="font-family:'Material Symbols Rounded';font-size:16px;width:16px;">{{ pm.check }}</span><span style="font-family:'Material Symbols Rounded';font-size:17px;">{{ pm.icon }}</span><span>{{ pm.label }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;">
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+<div onClick="{{ n.onClick }}" style="display:flex;align-items:center;gap:9px;height:32px;padding:0 10px;border-radius:10px;cursor:pointer;background:{{ n.bg }};">
+<span style="font-family:'Material Symbols Rounded';font-size:18px;color:{{ n.ic }};font-variation-settings:'FILL' {{ n.fill }};">{{ n.icon }}</span>
+<span style="flex:1;font-size:13px;font-weight:{{ n.fw }};">{{ n.label }}</span>
+<sc-if value="{{ n.badge }}"><span style="font-size:11px;color:var(--l2);font-weight:600;font-variant-numeric:tabular-nums;">{{ n.badge }}</span></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="font-size:11px;font-weight:700;color:var(--l3);padding:18px 10px 6px;">Recent Clients</div>
+<sc-for list="{{ recent }}" as="rc" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:9px;height:32px;padding:0 10px;border-radius:10px;">
+<span style="width:20px;height:20px;border-radius:10px;background:var(--fill2);font-size:9px;font-weight:700;color:var(--l2);display:flex;align-items:center;justify-content:center;">{{ rc.ini }}</span>
+<span style="font-size:13px;">{{ rc.name }}</span>
+</div>
+</sc-for>
+<div style="margin-top:auto;display:flex;align-items:center;gap:9px;padding:8px 6px 2px;border-top:0.5px solid var(--sep);">
+<span style="width:28px;height:28px;border-radius:14px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ p.proIni }}</span>
+<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;">{{ p.pro }}</div><div style="font-size:11px;color:var(--l2);display:flex;align-items:center;gap:3px;"><span style="font-family:'Material Symbols Rounded';font-size:12px;">lock</span>End-to-end encrypted</div></div>
+<span onClick="{{ openOnboard }}" title="Show onboarding" style="font-family:'Material Symbols Rounded';font-size:18px;color:var(--l2);cursor:pointer;">help</span>
+</div>
+</div>
+
+<sc-if value="{{ toast }}">
+<div style="position:absolute;left:50%;bottom:28px;transform:translateX(-50%);margin-left:123px;height:36px;padding:0 16px;border-radius:18px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;border:0.5px solid var(--edge);background:var(--glass2);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 10px 30px rgba(0,0,0,.2);white-space:nowrap;"><span style="font-family:'Material Symbols Rounded';font-size:18px;color:var(--green);font-variation-settings:'FILL' 1;">check_circle</span>{{ toast }}</div>
+</sc-if>
+
+<sc-if value="{{ onboard }}">
+<div style="position:absolute;inset:0;background:var(--dim);display:flex;align-items:center;justify-content:center;z-index:10;">
+<div style="width:580px;border-radius:26px;border:0.5px solid var(--edge);background:var(--glass2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 30px 80px rgba(0,0,0,.35);padding:36px 40px 24px;display:flex;flex-direction:column;gap:22px;">
+
+<sc-if value="{{ ob0 }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;">
+<div style="width:76px;height:76px;border-radius:20px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 8px 20px color-mix(in srgb,var(--accent) 35%,transparent);"><span style="font-family:'Material Symbols Rounded';font-size:44px;color:#fff;">graphic_eq</span></div>
+<div style="font-size:26px;font-weight:700;letter-spacing:-0.4px;margin-top:6px;">Welcome to Verity</div>
+<div style="font-size:14px;color:var(--l2);max-width:400px;line-height:1.45;text-wrap:pretty;">Record once. Get the documents your profession needs — every line traceable to what was actually said.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px;padding:0 20px;">
+<sc-for list="{{ obFeatures }}" as="of" hint-placeholder-count="3">
+<div style="display:flex;gap:14px;align-items:flex-start;"><span style="font-family:'Material Symbols Rounded';font-size:26px;color:var(--accent);">{{ of.icon }}</span><div><div style="font-size:13px;font-weight:600;">{{ of.t }}</div><div style="font-size:13px;color:var(--l2);margin-top:1px;line-height:1.4;">{{ of.d }}</div></div></div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ ob1 }}">
+<div style="text-align:center;"><div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;">What kind of work do you do?</div><div style="font-size:13px;color:var(--l2);margin-top:4px;">Sets your templates, vocabulary and safety rules. Change it anytime.</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+<sc-for list="{{ obProfs }}" as="op" hint-placeholder-count="4">
+<div onClick="{{ op.onClick }}" style="padding:14px;border-radius:16px;background:var(--card);cursor:pointer;border:2px solid {{ op.border }};display:flex;flex-direction:column;gap:6px;">
+<span style="font-family:'Material Symbols Rounded';font-size:26px;color:var(--accent);">{{ op.icon }}</span>
+<div style="font-size:14px;font-weight:600;">{{ op.label }}</div>
+<div style="font-size:12px;color:var(--l2);line-height:1.35;">{{ op.outs }}</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ ob2 }}">
+<div style="text-align:center;"><div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;">Privacy defaults</div><div style="font-size:13px;color:var(--l2);margin-top:4px;">Strict by default. Your organization can tighten these further.</div></div>
+<div style="background:var(--card);border-radius:14px;overflow:hidden;">
+<sc-for list="{{ obPriv }}" as="pr" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:{{ pr.border }};">
+<div style="flex:1;"><div style="font-size:13px;font-weight:500;">{{ pr.t }}</div><div style="font-size:12px;color:var(--l2);margin-top:1px;">{{ pr.d }}</div></div>
+<sc-if value="{{ pr.locked }}"><span style="font-family:'Material Symbols Rounded';font-size:18px;color:var(--l2);">lock</span></sc-if>
+<sc-if value="{{ pr.isToggle }}"><div onClick="{{ pr.onToggle }}" style="width:38px;height:22px;border-radius:11px;background:{{ pr.track }};position:relative;cursor:pointer;transition:background .2s;"><div style="position:absolute;top:2px;left:{{ pr.knob }};width:18px;height:18px;border-radius:9px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s;"></div></div></sc-if>
+<sc-if value="{{ pr.isValue }}"><span style="font-size:13px;color:var(--l2);display:flex;align-items:center;">{{ pr.value }}<span style="font-family:'Material Symbols Rounded';font-size:16px;">unfold_more</span></span></sc-if>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ ob3 }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:12px 0;">
+<div style="width:76px;height:76px;border-radius:38px;background:color-mix(in srgb,var(--red) 14%,transparent);display:flex;align-items:center;justify-content:center;"><span style="font-family:'Material Symbols Rounded';font-size:40px;color:var(--red);font-variation-settings:'FILL' 1;">mic</span></div>
+<div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;margin-top:6px;">Allow microphone access</div>
+<div style="font-size:14px;color:var(--l2);max-width:400px;line-height:1.45;text-wrap:pretty;">Verity only listens after consent is confirmed and you press Record. The menu bar indicator shows whenever the mic is on.</div>
+</div>
+</sc-if>
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding-top:4px;">
+<div style="display:flex;gap:6px;"><sc-for list="{{ obDots }}" as="od" hint-placeholder-count="4"><span style="width:7px;height:7px;border-radius:4px;background:{{ od.c }};"></span></sc-for></div>
+<div style="display:flex;gap:8px;">
+<sc-if value="{{ obCanBack }}"><button onClick="{{ obBack }}" style="height:32px;padding:0 16px;border-radius:16px;border:none;background:var(--fill2);font-size:13px;font-weight:500;cursor:pointer;">Back</button></sc-if>
+<button onClick="{{ obNext }}" style="height:32px;padding:0 18px;border-radius:16px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">{{ obNextLabel }}</button>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+
+<sc-if value="{{ showPhone }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:14px;">
+<div style="display:flex;align-items:baseline;gap:10px;font-size:13px;color:var(--l2);"><span style="font-weight:600;color:var(--label);">Verity for iPhone</span><span>iOS 26 companion · Handoff</span></div>
+<div style="width:426px;height:894px;border-radius:70px;background:#0c0c0e;padding:12px;box-shadow:0 0 0 1.5px #3a3a3e,0 30px 80px rgba(0,0,0,.3);">
+<div style="position:relative;width:402px;height:870px;border-radius:58px;overflow:hidden;background:var(--side);">
+<div style="position:absolute;top:11px;left:50%;transform:translateX(-50%);width:124px;height:36px;border-radius:18px;background:#000;z-index:3;"></div>
+<div style="position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 46px;font-size:16px;font-weight:600;z-index:2;"><span>9:41</span><span style="display:flex;gap:5px;align-items:center;"><span style="font-family:'Material Symbols Rounded';font-size:18px;font-variation-settings:'FILL' 1;">signal_cellular_alt</span><span style="font-family:'Material Symbols Rounded';font-size:18px;">wifi</span><span style="font-family:'Material Symbols Rounded';font-size:22px;font-variation-settings:'FILL' 1;">battery_full</span></span></div>
+
+<div style="position:absolute;inset:0;overflow:auto;padding:62px 20px 120px;">
+<sc-if value="{{ phRecord }}" hint-placeholder-val="{{ true }}">
+<div style="font-size:34px;font-weight:700;letter-spacing:-0.4px;padding:8px 0 14px;">Record</div>
+<div style="background:var(--card);border-radius:22px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+<div style="width:42px;height:42px;border-radius:21px;background:var(--fill2);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--l2);font-size:15px;">{{ p.ini }}</div>
+<div style="flex:1;"><div style="font-size:17px;font-weight:600;">{{ p.client }}</div><div style="font-size:14px;color:var(--l2);">{{ p.session }}</div></div>
+</div>
+<sc-if value="{{ recConsent }}" hint-placeholder-val="{{ true }}">
+<div style="font-size:13px;color:var(--l2);text-transform:uppercase;padding:22px 16px 7px;">Consent</div>
+<div style="background:var(--card);border-radius:22px;overflow:hidden;">
+<sc-for list="{{ consent }}" as="c" hint-placeholder-count="3">
+<div onClick="{{ c.onToggle }}" style="display:flex;align-items:center;gap:12px;min-height:52px;padding:10px 16px;border-top:{{ c.border }};cursor:pointer;">
+<span style="font-family:'Material Symbols Rounded';font-size:24px;color:{{ c.ic }};font-variation-settings:'FILL' {{ c.fill }};">{{ c.icon }}</span>
+<span style="flex:1;font-size:16px;line-height:1.3;">{{ c.label }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:34px;">
+<button onClick="{{ startRec }}" style="width:96px;height:96px;border-radius:48px;border:4px solid var(--card);outline:2px solid {{ startBg }};background:{{ startBg }};display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:42px;color:{{ startColor }};font-variation-settings:'FILL' 1;">mic</span></button>
+<div style="font-size:15px;color:var(--l2);">{{ phStartHint }}</div>
+</div>
+</sc-if>
+<sc-if value="{{ recLive }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:30px 0 14px;">
+<div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:{{ liveColor }};text-transform:uppercase;letter-spacing:0.4px;"><span style="width:8px;height:8px;border-radius:4px;background:{{ liveColor }};animation:{{ pulseAnim }};"></span>{{ liveLabel }}</div>
+<div style="font-size:60px;font-weight:300;font-variant-numeric:tabular-nums;">{{ timer }}</div>
+</div>
+<div style="height:56px;display:flex;align-items:center;justify-content:center;gap:3px;">
+<sc-for list="{{ phBars }}" as="b" hint-placeholder-count="30"><div style="width:4px;border-radius:2px;background:{{ b.c }};height:{{ b.h }}px;transition:height .12s;"></div></sc-for>
+</div>
+<div style="background:var(--card);border-radius:22px;padding:14px 16px;margin-top:16px;display:flex;flex-direction:column;gap:10px;">
+<sc-for list="{{ phLines }}" as="l"><div style="font-size:15px;line-height:1.4;"><span style="font-weight:600;color:{{ l.color }};">{{ l.who }} </span>{{ l.text }}</div></sc-for>
+</div>
+<div style="display:flex;justify-content:center;gap:18px;padding-top:24px;">
+<button onClick="{{ addBookmark }}" style="width:60px;height:60px;border-radius:30px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 4px 14px var(--gsh);display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:26px;">bookmark_add</span></button>
+<button onClick="{{ stopRec }}" style="width:60px;height:60px;border-radius:30px;border:none;background:var(--red);display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:28px;color:#fff;font-variation-settings:'FILL' 1;">stop</span></button>
+<button onClick="{{ togglePause }}" style="width:60px;height:60px;border-radius:30px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 4px 14px var(--gsh);display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:28px;font-variation-settings:'FILL' 1;">{{ pauseIcon }}</span></button>
+</div>
+</sc-if>
+<sc-if value="{{ recProc }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:80px;text-align:center;">
+<span style="font-family:'Material Symbols Rounded';font-size:40px;color:var(--accent);animation:vspin 1s linear infinite;">progress_activity</span>
+<div style="font-size:17px;font-weight:600;">Generating documents</div>
+<div style="font-size:15px;color:var(--l2);">Review and approve them on your Mac or here.</div>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ phToday }}">
+<div style="font-size:34px;font-weight:700;letter-spacing:-0.4px;padding:8px 0 14px;">Today</div>
+<div style="background:var(--card);border-radius:22px;overflow:hidden;">
+<sc-for list="{{ sessions }}" as="s" hint-placeholder-count="3">
+<div onClick="{{ s.onClick }}" style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 16px;border-top:{{ s.border }};cursor:pointer;">
+<div style="flex:1;"><div style="font-size:17px;">{{ s.client }}</div><div style="font-size:14px;color:var(--l2);">{{ s.time }} · {{ s.type }}</div></div>
+<div style="font-size:12px;font-weight:600;padding:3px 9px;border-radius:10px;color:{{ s.color }};background:{{ s.bg }};">{{ s.status }}</div>
+</div>
+</sc-for>
+</div>
+<div style="font-size:13px;color:var(--l2);text-transform:uppercase;padding:22px 16px 7px;">Follow-ups</div>
+<div style="background:var(--card);border-radius:22px;overflow:hidden;">
+<sc-for list="{{ actions }}" as="a" hint-placeholder-count="3">
+<div onClick="{{ a.onToggle }}" style="display:flex;align-items:center;gap:12px;min-height:52px;padding:10px 16px;border-top:{{ a.border }};cursor:pointer;">
+<span style="font-family:'Material Symbols Rounded';font-size:24px;color:{{ a.ic }};font-variation-settings:'FILL' {{ a.fill }};">{{ a.icon }}</span>
+<span style="flex:1;font-size:16px;line-height:1.3;text-decoration:{{ a.deco }};color:{{ a.color }};">{{ a.text }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ phDrafts }}">
+<div style="font-size:34px;font-weight:700;letter-spacing:-0.4px;padding:8px 0 14px;">Drafts</div>
+<div style="background:var(--card);border-radius:22px;overflow:hidden;">
+<sc-for list="{{ drafts }}" as="d" hint-placeholder-count="3">
+<div onClick="{{ d.onPhone }}" style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 16px;border-top:{{ d.border }};cursor:pointer;">
+<span style="font-family:'Material Symbols Rounded';font-size:26px;color:var(--accent);">description</span>
+<div style="flex:1;"><div style="font-size:17px;">{{ d.name }}</div><div style="font-size:14px;color:{{ d.color }};">{{ d.flags }}</div></div>
+<span style="font-family:'Material Symbols Rounded';font-size:20px;color:var(--l3);">chevron_right</span>
+</div>
+</sc-for>
+</div>
+<div style="font-size:13px;color:var(--l2);padding:10px 16px;line-height:1.4;">Tap a draft to read it. Approve with Face ID or on your Mac.</div>
+</sc-if>
+
+<sc-if value="{{ phDoc }}">
+<div onClick="{{ phBack }}" style="display:flex;align-items:center;gap:2px;color:var(--accent);font-size:17px;padding:6px 0;cursor:pointer;"><span style="font-family:'Material Symbols Rounded';font-size:26px;">chevron_left</span>Drafts</div>
+<div style="font-size:28px;font-weight:700;letter-spacing:-0.3px;padding:4px 0 2px;">{{ phDocName }}</div>
+<div style="font-size:14px;color:var(--l2);padding-bottom:14px;">{{ p.client }} · {{ p.session }}</div>
+<div style="display:flex;flex-direction:column;gap:14px;">
+<sc-for list="{{ phDocSecs }}" as="fs" hint-placeholder-count="3">
+<div style="background:var(--card);border-radius:22px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;">
+<div style="font-size:13px;font-weight:600;color:var(--l2);text-transform:uppercase;">{{ fs.title }}</div>
+<sc-for list="{{ fs.items }}" as="it"><div style="display:flex;gap:8px;font-size:16px;line-height:1.4;color:{{ it.color }};font-style:{{ it.fs }};"><span>{{ it.mark }}</span><span style="flex:1;">{{ it.text }}</span><span style="font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums;padding-top:3px;">{{ it.time }}</span></div></sc-for>
+</div>
+</sc-for>
+</div>
+<div style="font-size:13px;color:{{ signColor }};padding:14px 16px 0;">{{ signLine }}</div>
+</sc-if>
+</div>
+
+<div style="position:absolute;left:20px;right:20px;bottom:30px;display:flex;gap:10px;align-items:center;">
+<div style="flex:1;height:64px;border-radius:32px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 8px 24px var(--gsh);display:flex;padding:4px;">
+<sc-for list="{{ phTabs }}" as="pt" hint-placeholder-count="3">
+<div onClick="{{ pt.onClick }}" style="flex:1;border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;background:{{ pt.bg }};color:{{ pt.color }};">
+<span style="font-family:'Material Symbols Rounded';font-size:24px;font-variation-settings:'FILL' {{ pt.fill }};">{{ pt.icon }}</span><span style="font-size:10px;font-weight:600;">{{ pt.label }}</span>
+</div>
+</sc-for>
+</div>
+<div style="width:64px;height:64px;border-radius:32px;border:0.5px solid var(--edge);background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:inset 0 1px 0 var(--hi),0 8px 24px var(--gsh);display:flex;align-items:center;justify-content:center;"><span style="font-family:'Material Symbols Rounded';font-size:26px;">search</span></div>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:140px;height:5px;border-radius:3px;background:var(--label);"></div>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;reduceTransparency&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Accessibility&quot;},&quot;showPhone&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const D = {
+  medical: { label:'Medical', icon:'stethoscope', pro:'Dr. Lena Hart', first:'Dr. Hart', client:'Maya Okafor', session:'Follow-up consultation', dur:'4:52', prior:'3 prior visits', tpl:'Clinical consultation', who:['Dr. Hart','Patient'],
+    outs:'SOAP notes, patient summaries, referrals, coding suggestions',
+    sessions:[['9:00','Maya Okafor','Follow-up consultation'],['10:30','Sam Whitaker','New patient'],['13:15','Priya Nair','Medication review']],
+    recent:['Maya Okafor','Sam Whitaker','Rosa Gomez'],
+    actions:[['Send visit summary to Maya Okafor',8],['Book 4-week review',8],['Same-day visit if sudden severe headache',9]],
+    t:[[0,'00:12','Before we start — are you comfortable with me recording so I can focus on you rather than typing?'],[1,'00:18','Yes, that’s fine.'],[0,'00:41','How have the headaches been since we adjusted the dose?'],[1,'00:47','Better. Maybe two a week now instead of almost daily. Mostly late afternoon.'],[1,'01:20','No vision changes, no numbness. I did have some nausea with the last bad one.'],[0,'02:05','Your blood pressure today is 128 over 82, improved from last visit.'],[0,'03:30','Let’s keep the current dose and add a headache diary for four weeks.'],[1,'03:52','Should I still avoid coffee in the afternoon?'],[0,'04:02','Yes, cut off caffeine by 2 p.m. I’ll send you a summary and book a review in a month.'],[0,'04:40','If you get a sudden severe headache, come in the same day.']],
+    docs:[['SOAP Note',[['Subjective',[['Headache frequency reduced to ~2 per week from near-daily','confirmed',3],['Headaches occur mostly in the late afternoon','confirmed',3],['Vision changes and numbness','denied',4],['Nausea with the most recent severe episode','review',4]]],['Objective',[['BP 128/82, improved from prior visit','confirmed',5],['Neurological examination findings','missing',-1]]],['Assessment',[['Headaches improving on current regimen — confirm clinical impression','review',3]]],['Plan',[['Continue current dose','confirmed',6],['Headache diary for 4 weeks','confirmed',6],['Caffeine cut-off at 2 p.m.','confirmed',8],['Review appointment in 1 month','confirmed',8],['Same-day visit for sudden severe headache','confirmed',9]]]]],
+      ['Patient Summary',[['What we discussed',[['Your headaches are less frequent than before','confirmed',3],['Your blood pressure has improved','confirmed',5]]],['What to do next',[['Keep taking your current dose and fill in a headache diary for 4 weeks','confirmed',6],['Avoid caffeine after 2 p.m.','confirmed',8]]],['When to come in sooner',[['A sudden, severe headache — come in the same day','confirmed',9]]]]],
+      ['Coding Suggestions',[['Suggested — verify before use',[['Headache diagnosis code consistent with documented history','review',3],['Established-patient visit level — verify against your documentation','review',-1]]]]]],
+    ask:[['What follow-up did I promise?','You said you would send a visit summary and book a review in one month. You also asked the patient to come in the same day for a sudden severe headache.',[8,9]],['Which symptoms were explicitly denied?','The patient denied vision changes and numbness.',[4]],['Was a neurological exam discussed?','No. The transcript contains no examination findings, so this is flagged as “Not mentioned” in the SOAP note rather than filled in.',[]]],
+    studio:[['Subjective','Client-reported concerns, symptoms and history',1],['Objective','Observed or measured findings only',1],['Assessment','Supported only by documented information',1],['Plan','Treatment, referrals, follow-up',1],['Follow-up tasks','Promises made during the visit',1],['Patient letter','Plain-language summary for the patient',0]] },
+  legal: { label:'Legal', icon:'gavel', pro:'Ana Ruiz, Esq.', first:'Ana', client:'Daniel Reyes', session:'Initial consultation', dur:'4:31', prior:'New client', tpl:'Client intake', who:['Attorney','Client'],
+    outs:'Intake memos, chronologies, issues for research, follow-ups',
+    sessions:[['9:30','Daniel Reyes','Initial consultation'],['11:00','Harbor & Pine LLC','Contract review'],['14:00','Mei Chen','Estate planning']],
+    recent:['Daniel Reyes','Harbor & Pine LLC','Mei Chen'],
+    actions:[['Request lease, voicemail and invoices',7],['Respond on lockout provisions by Friday',8],['Open conflict check',-1]],
+    t:[[0,'00:09','With your consent I’ll record this so the notes are accurate. Everything stays confidential.'],[1,'00:15','Okay, that’s fine.'],[1,'00:52','I signed the commercial lease in March 2024, for five years.'],[1,'01:34','In August the landlord changed the locks without notice. I couldn’t get in for nine days.'],[0,'02:10','Did you receive anything in writing before that?'],[1,'02:16','No. Nothing written. Just a voicemail the week before, I think.'],[1,'03:05','I lost two large catering orders during those days.'],[0,'03:48','Please send me the lease, the voicemail, and the cancelled order invoices.'],[0,'04:20','I’ll review whether the lockout complied with the lease’s default provisions and get back to you by Friday.']],
+    docs:[['Intake Memo',[['Facts',[['Five-year commercial lease signed March 2024','confirmed',2],['Locked out without notice in August for nine days','confirmed',3],['Written notice before the lockout','denied',5],['Possible voicemail the week before — client unsure','review',5]]],['Damages',[['Two large catering orders lost during lockout','confirmed',6],['Amount of lost revenue','missing',-1]]],['Issues for research',[['Whether the lockout complied with the lease’s default provisions','confirmed',8],['Applicable statutory notice requirements','review',-1]]]]],
+      ['Chronology',[['Timeline',[['March 2024 — lease signed','confirmed',2],['August — voicemail (exact date uncertain)','review',5],['August — lockout begins, lasts nine days','confirmed',3]]]]],
+      ['Client Follow-up',[['Requested from client',[['Lease, voicemail recording, cancelled-order invoices','confirmed',7]]],['Our commitment',[['Response on lockout provisions by Friday','confirmed',8]]]]]],
+    ask:[['What did I promise the client?','You said you would review whether the lockout complied with the lease’s default provisions and respond by Friday.',[8]],['Was written notice ever given?','The client said no written notice was received — only a possible voicemail the week before, which they were unsure about.',[5]],['What documents are outstanding?','The lease, the voicemail, and the cancelled order invoices.',[7]]],
+    studio:[['Facts','Client-stated facts with dates',1],['Chronology','Ordered events, uncertainty marked',1],['Issues for research','Questions — not legal conclusions',1],['Missing evidence','Documents to request',1],['Client follow-up','Draft message to the client',0]] },
+  therapy: { label:'Therapy', icon:'psychology', pro:'Sam Patel, LMFT', first:'Sam', client:'Jordan Lee', session:'Session 6', dur:'4:18', prior:'5 prior sessions', tpl:'Progress note (DAP)', who:['Therapist','Client'],
+    outs:'DAP, SOAP, BIRP notes, treatment-plan updates, session prep',
+    sessions:[['10:00','Jordan Lee','Session 6'],['12:00','Avery Brooks','Intake'],['15:30','Chris Moreno','Session 12']],
+    recent:['Jordan Lee','Avery Brooks','Chris Moreno'],
+    actions:[['Share sleep log template with Jordan',7],['Schedule session 7',-1],['Update treatment plan goals',2]],
+    t:[[0,'00:10','As always, this is recorded with your consent, and you can pause it anytime.'],[1,'00:16','Yep, that’s okay.'],[1,'00:58','I used the breathing exercise before two meetings this week.'],[1,'01:40','Sleep’s still rough. I’m up around 3 a.m. most nights.'],[0,'02:25','When you wake, what goes through your mind?'],[1,'02:31','Work, mostly. Lists of things I haven’t done.'],[1,'03:20','No, nothing like thoughts of hurting myself. Just tired.'],[0,'04:05','Let’s try a worry window in the evening and track sleep for two weeks.']],
+    docs:[['DAP Note',[['Data',[['Used breathing exercise before two meetings','confirmed',2],['Early waking around 3 a.m. most nights','confirmed',3],['Work-related racing thoughts on waking','confirmed',5],['Thoughts of self-harm','denied',6]]],['Assessment',[['Partial progress on anxiety coping goals — confirm','review',2]]],['Plan',[['Introduce evening worry window','confirmed',7],['Sleep log for two weeks','confirmed',7],['Next session date','missing',-1]]]]],
+      ['Treatment Plan Update',[['Goal: reduce anticipatory anxiety',[['Client applying breathing skill in real situations','confirmed',2]]],['Goal: improve sleep',[['Early waking persists; sleep log added','confirmed',3]]]]],
+      ['Next Session Prep',[['Review',[['Sleep log results','confirmed',7],['Worry window adherence','confirmed',7]]]]]],
+    ask:[['Did the client deny risk?','Yes. The client said they had no thoughts of hurting themselves, describing themselves as “just tired.”',[6]],['What homework did we agree?','An evening worry window and a two-week sleep log.',[7]],['What progress was reported?','The client used the breathing exercise before two meetings this week.',[2]]],
+    studio:[['Data','Client statements and observations',1],['Assessment','Clinician interpretation — always reviewed',1],['Plan','Interventions and homework',1],['Risk screen','Explicit statements only, never inferred',1],['Next session prep','Items to revisit',0]] },
+  consulting: { label:'Consulting', icon:'work', pro:'Alex Kim', first:'Alex', client:'Northwind Foods', session:'Discovery workshop', dur:'4:05', prior:'2 prior meetings', tpl:'Discovery notes', who:['Alex','Client'],
+    outs:'Meeting minutes, decision logs, requirements, proposals',
+    sessions:[['9:00','Northwind Foods','Discovery workshop'],['11:30','Lumen Health','Steering committee'],['16:00','Orbit Retail','Proposal review']],
+    recent:['Northwind Foods','Lumen Health','Orbit Retail'],
+    actions:[['Draft scope and pilot timeline by Thursday',7],['Follow up after finance review Tuesday',5],['Book Denver site visit',6]],
+    t:[[0,'00:08','I’ll record so we capture decisions accurately — everyone okay with that?'],[1,'00:13','Fine by us.'],[1,'00:44','Our biggest pain is reconciling orders across three warehouses manually.'],[1,'01:30','We need a pilot live before the January peak.'],[0,'02:12','Is budget approved for this quarter?'],[1,'02:18','Not yet. Finance reviews it next Tuesday.'],[1,'03:01','We’ve decided to start with the Denver warehouse.'],[0,'03:40','I’ll draft the scope and a pilot timeline by Thursday.']],
+    docs:[['Meeting Minutes',[['Problem',[['Manual order reconciliation across three warehouses','confirmed',2]]],['Constraints',[['Pilot must be live before the January peak','confirmed',3],['Budget not yet approved — finance review Tuesday','review',5],['Pilot success metrics','missing',-1]]],['Decisions',[['Pilot starts with the Denver warehouse','confirmed',6]]]]],
+      ['Decision Log',[['Decisions',[['Denver warehouse selected for pilot','confirmed',6]]],['Open',[['Budget approval','review',5]]]]],
+      ['Next Steps',[['Owner: Alex',[['Draft scope and pilot timeline by Thursday','confirmed',7]]]]]],
+    ask:[['What was decided?','The pilot will start with the Denver warehouse.',[6]],['What’s blocking budget?','Budget isn’t approved yet; finance reviews it next Tuesday.',[5]],['What do I owe them?','A draft scope and pilot timeline by Thursday.',[7]]],
+    studio:[['Problem statement','Pain points in the client’s words',1],['Requirements','Must-haves and constraints',1],['Decisions','Only explicitly agreed decisions',1],['Open questions','Unresolved items',1],['Proposal outline','Draft structure',0]] }
+};
+const EXTRA = {
+  medical:{ 'Follow-up tasks':'actions', 'Patient letter':[1] },
+  legal:{ 'Chronology':[1], 'Missing evidence':[['Amount of lost revenue','missing',-1],['Voicemail recording','review',7],['Cancelled-order invoices','review',7]], 'Client follow-up':[2] },
+  therapy:{ 'Risk screen':[['Thoughts of self-harm','denied',6]], 'Next session prep':[2] },
+  consulting:{ 'Problem statement':[['Manual order reconciliation across three warehouses','confirmed',2]], 'Requirements':[['Pilot live before the January peak','confirmed',3],['Start with the Denver warehouse','confirmed',6]], 'Open questions':[['Budget approval pending finance review on Tuesday','review',5],['Pilot success metrics','missing',-1]], 'Proposal outline':[['Scope: Denver warehouse reconciliation pilot','confirmed',6],['Timeline: live before January peak','confirmed',3],['Dependency: budget approval','review',5]] }
+};
+const cap = t => t[0].toUpperCase() + t.slice(1);
+const phrase = c => c[1]==='denied' ? `Explicitly denied: ${c[0][0].toLowerCase()+c[0].slice(1)}` : c[0];
+const ST = { confirmed:['Confirmed','var(--green)'], review:['Needs review','var(--orange)'], denied:['Explicitly denied','var(--indigo)'], missing:['Not mentioned','var(--red)'] };
+const tint = (c,p) => `color-mix(in srgb, ${c} ${p||14}%, transparent)`;
+const ini = s => s.split(/\s+/).filter(w=>/^[A-Z]/.test(w)).slice(0,2).map(w=>w[0]).join('');
+const fmt = n => `${String(Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`;
+const SEP = '0.5px solid var(--sep)';
+
+class Component extends DCLogic {
+  state = { screen:'today', prof:'medical', onboard:false, ob:0, menu:false, theme:null, rec:'consent', paused:false, secs:0, live:0, tick:0, consent:[false,false,false], noAudio:false, off:{}, proc:0, doc:0, sel:null, hl:-1, ovr:{}, approved:{}, chat:[], draft:'', thinking:false, st:null, style:0, tplName:null, instr:'Use professional language. Clearly distinguish reported information from observations. Flag missing information rather than inventing it.', fmts:[true,true,false], phone:'record', toast:null, bm:0, docView:'evidence', phDoc:0, done:{}, keepAudio:false };
+  insRef = React.createRef();
+  componentDidMount() {
+    let ob = true; try { ob = !localStorage.getItem('verity-onboarded'); } catch(e) {}
+    if (ob) this.setState({ onboard:true });
+    this.iv1 = setInterval(() => { if (this.state.rec==='live' && !this.state.paused) this.setState(s => ({ tick:s.tick+1 })); }, 130);
+    this.iv2 = setInterval(() => { const s = this.state; if (s.rec==='live' && !s.paused) { const n = s.secs+1; this.setState({ secs:n, live:Math.min(D[s.prof].t.length, Math.max(s.live, Math.floor(n/2.5)+1)) }); } }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this.iv1); clearInterval(this.iv2); clearTimeout(this.pt); clearTimeout(this.tt); }
+  flash(msg) { clearTimeout(this.tt); this.setState({ toast:msg }); this.tt = setTimeout(() => this.setState({ toast:null }), 2600); }
+  go(screen) { this.setState({ screen, menu:false, sel:null, hl:-1 }); }
+  setProf(prof) { this.setState({ prof, menu:false, doc:0, sel:null, hl:-1, chat:[], st:null, tplName:null, rec:'consent', secs:0, live:0, consent:[false,false,false], off:{} }); }
+  scrollTo(i) { setTimeout(() => { const c = this.insRef.current; if (!c) return; const el = c.querySelector(`[data-line="${i}"]`); if (el) c.scrollTo({ top: el.offsetTop - 60, behavior:'smooth' }); }, 30); }
+  stop() {
+    this.setState({ rec:'processing', proc:0, paused:false });
+    const step = () => { if (this.state.proc >= 4) { this.setState(s => ({ rec:'consent', screen:'doc', doc:0, consent:[false,false,false], done:{ ...s.done, [s.prof]:true }, phone:'drafts' })); this.flash(`${this.outCount()} documents ready for review`); return; } this.setState(s => ({ proc:s.proc+1 })); this.pt = setTimeout(step, 700); };
+    this.pt = setTimeout(step, 700);
+  }
+  outCount() { const p = D[this.state.prof]; return p.docs.filter((_,i) => !this.state.off[i]).length; }
+  ask(q) {
+    const p = D[this.state.prof]; if (!q.trim()) return;
+    const hit = p.ask.find(a => a[0].toLowerCase() === q.trim().toLowerCase());
+    this.setState(s => ({ chat:[...s.chat, { u:true, text:q }], draft:'', thinking:true }));
+    setTimeout(() => this.setState(s => ({ thinking:false, chat:[...s.chat, hit ? { text:hit[1], cites:hit[2] } : { text:'I couldn’t find anything in this session that answers that. Try rephrasing, or check the transcript directly.', cites:[] }] })), 700);
+  }
+  claimStatus(k, st) { return this.state.ovr[k] || st; }
+  studioClaims(prof, name) {
+    const p = D[prof], ex = (EXTRA[prof]||{})[name];
+    if (ex === 'actions') return p.actions.map(a => [a[0],'confirmed',a[1]]);
+    if (Array.isArray(ex) && typeof ex[0] === 'number') return p.docs[ex[0]][1].flatMap(s => s[1]);
+    if (Array.isArray(ex)) return ex;
+    for (const d of p.docs) for (const s of d[1]) if (s[0].toLowerCase() === name.toLowerCase()) return s[1];
+    return [];
+  }
+  render(claims, mode, t) {
+    const miss = claims.filter(c => c[1]==='missing'), ok = claims.filter(c => c[1]!=='missing' && c[1]!=='removed');
+    const note = c => ({ text:`${c[0]} — not mentioned in session, flagged for review`, mark:'', color:'var(--orange)', fs:'italic', time:'' });
+    const tm = c => c[2]>=0 ? t[c[2]][1] : '';
+    if (!claims.length) return [{ text:'No matching content in this session — section will be left for you to complete.', mark:'', color:'var(--l2)', fs:'italic', time:'' }];
+    if (mode===1) return [ ...(ok.length ? [{ text: ok.map(c => cap(phrase(c)).replace(/[.\s]*$/,'.')).join(' '), mark:'', color:'var(--label)', fs:'normal', time:'' }] : []), ...miss.map(note) ];
+    return [ ...ok.map(c => ({ text:cap(phrase(c)), mark: mode===2 ? '•' : '', color:'var(--label)', fs:'normal', time:tm(c) })), ...miss.map(note) ];
+  }
+
+  renderVals() {
+    const s = this.state, p0 = D[s.prof];
+    const theme = s.theme || this.props.theme || 'light';
+    const p = { ...p0, ini:ini(p0.client), proIni:ini(p0.pro.replace(/^Dr\.\s*/,'')) };
+    const live = s.rec==='live', isDoc = s.screen==='doc', isAsk = s.screen==='ask';
+    const docs = p0.docs.map((d,i)=>({d,i})).filter(x => !s.off[x.i]);
+    const di = docs.find(x => x.i===s.doc) ? s.doc : (docs[0]||{i:0}).i;
+    const doc = p0.docs[di];
+    const counts = { confirmed:0, review:0, denied:0, missing:0 };
+    let openTotal = 0;
+    p0.docs.forEach((d,dIdx) => d[1].forEach((sec,si) => sec[1].forEach((c,ci) => { const st = this.claimStatus(`${s.prof}|${dIdx}|${si}|${ci}`, c[1]); if (st==='review'||st==='missing') openTotal++; })));
+    const sections = doc[1].map((sec,si) => ({ title:sec[0], claims: sec[1].map((c,ci) => {
+      const k = `${s.prof}|${di}|${si}|${ci}`; const st = this.claimStatus(k, c[1]); if (st==='removed') return null; counts[st]++;
+      const [label,color] = ST[st];
+      return { text:c[0], label, color, bg:tint(color), time: c[2]>=0 ? p0.t[c[2]][1] : '—', rowBg: s.sel===k ? tint('var(--accent)',10) : 'transparent', tc: st==='missing' ? 'var(--l2)' : 'var(--label)', fs: st==='missing' ? 'italic' : 'normal',
+        onClick: () => { this.setState({ sel:k, hl:c[2] }); if (c[2]>=0) this.scrollTo(c[2]); } };
+    }).filter(Boolean) }));
+    let ev = { show:false };
+    if (isDoc && s.sel) {
+      const [,d,si,ci] = s.sel.split('|').map((x,i)=> i? +x : x); const c = p0.docs[d] && p0.docs[d][1][si] && p0.docs[d][1][si][1][ci];
+      if (c) { const st = this.claimStatus(s.sel, c[1]); const [label,color] = ST[st] || ST.review; const line = c[2]>=0 ? p0.t[c[2]] : null;
+        ev = { show:true, claim:c[0], label, color, bg:tint(color), quote: line ? `“${line[2]}” — ${p0.who[line[0]]}, ${line[1]}` : 'No supporting statement in the transcript. Add it manually from your own observation, or leave it out.',
+          removeLabel: st==='missing' ? 'Remove' : 'Flag', onConfirm: () => this.setState(x => ({ ovr:{ ...x.ovr, [s.sel]:'confirmed' } })),
+          onRemove: () => this.setState(x => ({ ovr:{ ...x.ovr, [s.sel]: st==='missing' ? 'removed' : 'review' }, sel: st==='missing' ? null : x.sel })) }; }
+    }
+    const approved = !!s.approved[`${s.prof}|${di}`];
+    const titles = { today:['Today', `${p0.label} workspace`], record:['Record', s.rec==='live' ? 'Recording in progress' : 'New client session'], doc:['Review', `${docs.length} documents from one recording`], ask:['Ask Session', `${p0.client} · ${p0.session}`], studio:['Output Studio', 'Custom template builder'] };
+    const navDefs = [['today','Today','today'],['record','Record','mic'],['doc','Review','fact_check'],['ask','Ask Session','forum'],['studio','Output Studio','dashboard_customize']];
+    const sessions = p0.sessions.map((x,i) => { const st = i===0 ? (s.done[s.prof] ? ['Draft ready','var(--accent)'] : (live ? ['Recording','var(--red)'] : ['Now','var(--green)'])) : ['Upcoming','var(--l2)'];
+      return { time:x[0], client:x[1], type:x[2], ini:ini(x[1]), status:st[0], color:st[1], bg:tint(st[1],12), border: i? SEP : 'none', onClick: () => this.go(i===0 && s.done[s.prof] ? 'doc' : 'record') }; });
+    const drafts = p0.docs.map((d,i) => { let n = 0; d[1].forEach((sec,si)=>sec[1].forEach((c,ci)=>{ const st=this.claimStatus(`${s.prof}|${i}|${si}|${ci}`,c[1]); if(st==='review'||st==='missing') n++; }));
+      const ap = s.approved[`${s.prof}|${i}`];
+      return { name:d[0], client:`${p0.client} · ${p0.session}`, flags: ap ? 'Approved' : (n ? `${n} to review` : 'Ready'), color: ap ? 'var(--green)' : (n ? 'var(--orange)' : 'var(--green)'), border: i? SEP : 'none', onClick: () => this.setState({ screen:'doc', doc:i, sel:null, hl:-1 }), onPhone: () => this.setState({ phone:'doc', phDoc:i }) }; });
+    const actions = p0.actions.map((a,i) => { const k = `a|${s.prof}|${i}`, dn = !!s.ovr[k];
+      return { text:a[0], time: a[1]>=0 ? p0.t[a[1]][1] : '—', icon: dn ? 'check_circle' : 'radio_button_unchecked', fill: dn?1:0, ic: dn ? 'var(--accent)' : 'var(--l3)', deco: dn ? 'line-through' : 'none', color: dn ? 'var(--l2)' : 'var(--label)', border: i? SEP : 'none',
+        onToggle: () => this.setState(x => ({ ovr:{ ...x.ovr, [k]: !dn } })), onSource: () => { if (a[1]>=0) { this.setState({ screen:'ask', hl:a[1] }); this.scrollTo(a[1]); } } }; });
+    const consentDefs = [['Client informed of purpose and storage','How notes are generated, who can see them, how long they’re kept'],['All participants agreed to be recorded','Verbal agreement is timestamped at the start of the transcript'],['Recording permitted at this location','Workspace policy: all-party consent everywhere']];
+    const allC = s.consent.every(Boolean), nC = s.consent.filter(Boolean).length;
+    const consent = consentDefs.map((c,i) => ({ label:c[0], sub:c[1], icon: s.consent[i] ? 'check_circle' : 'circle', fill: s.consent[i]?1:0, ic: s.consent[i] ? 'var(--green)' : 'var(--l3)', border: i? SEP : 'none', onToggle: () => this.setState(x => { const c2=[...x.consent]; c2[i]=!c2[i]; return { consent:c2 }; }) }));
+    const outIcons = ['description','summarize','assignment','checklist'];
+    const outs = p0.docs.map((d,i) => { const on = !s.off[i]; return { name:d[0], icon: on ? 'check' : 'add', bg: on ? tint('var(--accent)',13) : 'transparent', color: on ? 'var(--accent)' : 'var(--l2)', border: on ? 'transparent' : 'var(--sep)', onToggle: () => this.setState(x => ({ off:{ ...x.off, [i]: on } })) }; });
+    const t = s.tick;
+    const bars = Array.from({ length:56 }, (_,i) => { const h = live && !s.paused ? 6 + Math.abs(Math.sin(i*0.55 + t*0.8) * Math.cos(i*0.17 - t*0.33)) * 56 * (0.55 + 0.45*Math.abs(Math.sin(i*12.9898 + t*3.1))) : 4; return { h:Math.round(h), c: live && !s.paused ? 'var(--red)' : 'var(--l3)' }; });
+    const lineOf = (l,i) => ({ i, time:l[1], who:p0.who[l[0]], text:l[2], color: l[0]===0 ? 'var(--accent)' : 'var(--l2)' });
+    const liveLines = p0.t.slice(0, s.live).map(lineOf);
+    const procLabels = ['Transcribing and separating speakers','Extracting facts with timestamps','Validating claims against the transcript',`Rendering ${this.outCount()} documents`];
+    const procSteps = procLabels.map((l,i) => { const done = i < s.proc, cur = i===s.proc; return { label:l, icon: done ? 'check_circle' : (cur ? 'progress_activity' : 'circle'), color: done ? 'var(--green)' : (cur ? 'var(--accent)' : 'var(--l3)'), anim: cur ? 'vspin 1s linear infinite' : 'none', tc: done||cur ? 'var(--label)' : 'var(--l2)', border: i? SEP : 'none' }; });
+    const tLines = p0.t.map((l,i) => ({ ...lineOf(l,i), bg: s.hl===i ? tint('var(--accent)',16) : 'transparent', onClick: () => this.setState({ hl:i }) }));
+    const chat = s.chat.map(m => ({ text:m.text, justify: m.u ? 'flex-end' : 'flex-start', bg: m.u ? 'var(--accent)' : 'var(--fill)', color: m.u ? '#fff' : 'var(--label)', pad: '10px 14px', hasCites: !!(m.cites && m.cites.length),
+      cites: (m.cites||[]).map(i => ({ time:p0.t[i][1], who:p0.who[p0.t[i][0]], onClick: () => { this.setState({ hl:i }); this.scrollTo(i); } })) }));
+    const asked = new Set(s.chat.filter(m=>m.u).map(m=>m.text));
+    const stList = s.st || p0.studio.map(x => ({ name:x[0], desc:x[1], on:!!x[2] }));
+    const setSt = fn => this.setState(x => { const l = (x.st || p0.studio.map(y => ({ name:y[0], desc:y[1], on:!!y[2] }))).map(y=>({...y})); fn(l); return { st:l }; });
+    const stSecs = stList.map((x,i) => ({ name:x.name, desc:x.desc, tc: x.on ? 'var(--label)' : 'var(--l2)', track: x.on ? 'var(--green)' : 'var(--fill2)', knob: x.on ? '18px' : '2px', border: i? SEP : 'none',
+      onToggle: () => setSt(l => { l[i].on = !l[i].on; }), onUp: () => setSt(l => { if (i>0) [l[i-1],l[i]] = [l[i],l[i-1]]; }) }));
+    const styleNames = ['Concise','Narrative','Bulleted'];
+    const lineSets = [['92%','70%'],['100%','96%','88%','60%'],['40%','52%','46%']];
+    const fmtNames = ['DOCX','PDF','JSON'];
+    const ob = s.ob, obTitles = ['Continue','Continue','Continue','Allow & Finish'];
+    const privDefs = [['Require consent from every participant','Recommended default for all jurisdictions','lock'],['Keep raw audio after transcription','Off — only the transcript is stored','toggle'],['Retention','Transcripts and drafts','30 days'],['Never used to train AI models','Contractually guaranteed','lock']];
+    const phTabDefs = [['today','Today','today'],['record','Record','mic'],['drafts','Drafts','description']];
+    const finishOb = () => { try { localStorage.setItem('verity-onboarded','1'); } catch(e) {} this.setState({ onboard:false, ob:0 }); };
+
+    return {
+      theme, rt: this.props.reduceTransparency ? 'on' : 'off', showPhone: this.props.showPhone ?? true,
+      p, title: titles[s.screen][0], subtitle: titles[s.screen][1],
+      isToday: s.screen==='today', isRecord: s.screen==='record', isDoc, isAsk, isStudio: s.screen==='studio',
+      hasInspector: isDoc || isAsk, mainRight: isDoc || isAsk ? '316px' : '0px',
+      themeIcon: theme==='dark' ? 'light_mode' : 'dark_mode', toggleTheme: () => this.setState({ theme: theme==='dark' ? 'light' : 'dark' }),
+      menuOpen: s.menu, toggleMenu: () => this.setState({ menu:!s.menu }),
+      profMenu: Object.keys(D).map(k => ({ label:D[k].label, icon:D[k].icon, check: k===s.prof ? 'check' : '', onClick: () => this.setProf(k) })),
+      nav: navDefs.map(n => { const a = s.screen===n[0]; return { label:n[1], icon:n[2], bg: a ? 'var(--fill2)' : 'transparent', ic: a ? 'var(--accent)' : 'var(--l2)', fill: a?1:0, fw: a?600:400, badge: n[0]==='doc' && openTotal ? String(openTotal) : (n[0]==='record' && live ? '●' : ''), onClick: () => this.go(n[0]) }; }),
+      recent: p0.recent.map(n => ({ name:n, ini:ini(n) })), openOnboard: () => this.setState({ onboard:true, ob:0 }),
+      goRecord: () => this.go('record'), goUpload: () => this.flash('Drop an audio file anywhere in the window'),
+      sessions, drafts, actions,
+      recConsent: s.rec==='consent', recLive: live, recProc: s.rec==='processing', consent,
+      consentLabel: allC ? 'Verified' : `${nC} of 3 confirmed`, consentColor: allC ? 'var(--green)' : 'var(--l2)',
+      noAudioTrack: s.noAudio ? 'var(--green)' : 'var(--fill2)', noAudioKnob: s.noAudio ? '18px' : '2px', toggleNoAudio: () => this.setState({ noAudio:!s.noAudio }),
+      noAudioNote: s.noAudio ? ' · audio not stored' : '', outs,
+      startBg: allC ? 'var(--red)' : 'var(--fill2)', startColor: allC ? '#fff' : 'var(--l3)', startShadow: allC ? `0 8px 24px ${tint('var(--red)',35)}` : 'none',
+      startLabel: allC ? 'Start Recording' : 'Confirm consent to record', phStartHint: allC ? 'Tap to start recording' : 'Confirm consent to record',
+      startRec: () => { if (!allC) { this.flash('Confirm all consent items first'); return; } this.setState({ rec:'live', secs:0, live:1, paused:false, bm:0, screen: s.screen==='record' ? 'record' : s.screen, phone:'record' }); },
+      timer: fmt(s.secs), bars, phBars: bars.slice(13,43), liveLines, phLines: liveLines.slice(-2),
+      liveLabel: s.paused ? 'Paused' : 'Recording', liveColor: s.paused ? 'var(--orange)' : 'var(--red)', pulseAnim: s.paused ? 'none' : 'vpulse 1.4s ease-in-out infinite',
+      pauseIcon: s.paused ? 'play_arrow' : 'pause', togglePause: () => this.setState({ paused:!s.paused }),
+      addBookmark: () => { this.setState({ bm:s.bm+1 }); this.flash(`Bookmarked at ${fmt(s.secs)}`); }, bmLabel: s.bm ? `${s.bm} bookmark${s.bm>1?'s':''}` : '',
+      stopRec: () => this.stop(), procSteps,
+      docTabs: docs.map(x => ({ name:x.d[0], bg: x.i===di ? 'var(--card)' : 'transparent', sh: x.i===di ? '0 1px 3px rgba(0,0,0,.14)' : 'none', onClick: () => this.setState({ doc:x.i, sel:null, hl:-1 }) })),
+      docName: doc[0], sections, legend: Object.keys(ST).map(k => ({ label:ST[k][0], color:ST[k][1], n:counts[k] })),
+      docBadge: approved ? 'Approved & signed' : 'Draft — not yet in record', docBadgeColor: approved ? 'var(--green)' : 'var(--orange)', docBadgeBg: tint(approved ? 'var(--green)' : 'var(--orange)'),
+      approveLabel: approved ? 'Approved' : 'Approve & Sign', approveIcon: approved ? 'check' : 'signature', approveBg: approved ? tint('var(--green)',16) : 'var(--accent)', approveColor: approved ? 'var(--green)' : '#fff',
+      approve: () => { if (approved) return; const open = counts.review + counts.missing; this.setState(x => ({ approved:{ ...x.approved, [`${s.prof}|${di}`]:true } })); this.flash(open ? `Approved — ${open} open item${open>1?'s':''} noted in audit trail` : 'Approved and saved to record'); },
+      exports: fmtNames.map(n => ({ name:n, onClick: () => this.flash(`${doc[0]} exported as ${n}`) })),
+      ev, insRef: this.insRef, tLines,
+      chat, chatEmpty: !s.chat.length, thinking: s.thinking,
+      suggestions: p0.ask.filter(a => !asked.has(a[0])).map(a => ({ q:a[0], onClick: () => this.ask(a[0]) })),
+      draft: s.draft, onDraft: e => this.setState({ draft:e.target.value }), onKey: e => { if (e.key==='Enter') this.ask(s.draft); }, send: () => this.ask(s.draft),
+      tplName: s.tplName ?? p0.tpl, onTplName: e => this.setState({ tplName:e.target.value }), stSecs,
+      addSection: () => setSt(l => l.push({ name:'New section', desc:'Describe what this section should capture', on:true })),
+      styleOpts: styleNames.map((n,i) => ({ label:n, bg: s.style===i ? 'var(--card)' : 'transparent', sh: s.style===i ? '0 1px 3px rgba(0,0,0,.14)' : 'none', onClick: () => this.setState({ style:i }) })),
+      styleLabel: ['Concise & structured','Detailed narrative','Bulleted notes'][s.style],
+      instr: s.instr, onInstr: e => this.setState({ instr:e.target.value }),
+      preview: stList.filter(x=>x.on).map((x,i) => ({ n:i+1, name:x.name, items: this.render(this.studioClaims(s.prof, x.name), s.style, p0.t) })),
+      previewMeta: `${p0.client} · ${p0.session} · Oct 24, 2026`, previewSign: `Draft — requires approval by ${p0.pro}`,
+      isEvidence: s.docView==='evidence', isFinal: s.docView==='final',
+      viewTabs: [['evidence','Evidence'],['final','Document']].map(v => ({ label:v[1], bg: s.docView===v[0] ? 'var(--card)' : 'transparent', sh: s.docView===v[0] ? '0 1px 3px rgba(0,0,0,.14)' : 'none', onClick: () => this.setState({ docView:v[0], sel:null }) })),
+      finalSecs: doc[1].map((sec,si) => ({ title:sec[0], items: this.render(sec[1].map((c,ci) => [c[0], this.claimStatus(`${s.prof}|${di}|${si}|${ci}`, c[1]), c[2]]), 2, p0.t) })),
+      signLine: approved ? `Electronically signed by ${p0.pro} · Oct 24, 2026` : `Unsigned draft — requires approval by ${p0.pro}`, signColor: approved ? 'var(--green)' : 'var(--orange)',
+      phDoc: s.phone==='doc', phDocName: (p0.docs[s.phDoc||0]||p0.docs[0])[0], phBack: () => this.setState({ phone:'drafts' }),
+      phDocSecs: (p0.docs[s.phDoc||0]||p0.docs[0])[1].map((sec,si) => ({ title:sec[0], items: this.render(sec[1].map((c,ci) => [c[0], this.claimStatus(`${s.prof}|${s.phDoc||0}|${si}|${ci}`, c[1]), c[2]]), 2, p0.t) })),
+      fmts: fmtNames.map((n,i) => ({ name:n, bg: s.fmts[i] ? tint('var(--accent)',14) : 'var(--fill)', color: s.fmts[i] ? 'var(--accent)' : 'var(--l3)', onClick: () => this.setState(x => { const f=[...x.fmts]; f[i]=!f[i]; return { fmts:f }; }) })),
+      saveTpl: () => this.flash(`“${s.tplName ?? p0.tpl}” saved to ${p0.label} templates`),
+      toast: s.toast,
+      onboard: s.onboard, ob0: ob===0, ob1: ob===1, ob2: ob===2, ob3: ob===3, obCanBack: ob>0, obNextLabel: obTitles[ob],
+      obBack: () => this.setState({ ob:ob-1 }), obNext: () => ob<3 ? this.setState({ ob:ob+1 }) : finishOb(),
+      obDots: [0,1,2,3].map(i => ({ c: i===ob ? 'var(--accent)' : 'var(--fill2)' })),
+      obFeatures: [{ icon:'mic', t:'Record with consent', d:'Two taps to start. Consent is verified and timestamped first.' },{ icon:'fact_check', t:'Evidence for every line', d:'Each claim links to the moment it was said — or is flagged as missing.' },{ icon:'tune', t:'Your formats', d:'Generate several documents from one recording, in your own templates.' }],
+      obProfs: Object.keys(D).map(k => ({ label:D[k].label, icon:D[k].icon, outs:D[k].outs, border: k===s.prof ? 'var(--accent)' : 'transparent', onClick: () => this.setProf(k) })),
+      obPriv: privDefs.map((x,i) => ({ t:x[0], d:x[1], locked: x[2]==='lock', isToggle: x[2]==='toggle', isValue: x[2]!=='lock' && x[2]!=='toggle', value:x[2], border: i? SEP : 'none',
+        track: s.keepAudio ? 'var(--green)' : 'var(--fill2)', knob: s.keepAudio ? '18px' : '2px', onToggle: () => this.setState({ keepAudio:!s.keepAudio }) })),
+      phRecord: s.phone==='record', phToday: s.phone==='today', phDrafts: s.phone==='drafts',
+      phTabs: phTabDefs.map(x => { const a = s.phone===x[0] || (x[0]==='drafts' && s.phone==='doc'); return { label:x[1], icon:x[2], fill: a?1:0, bg: a ? 'var(--fill2)' : 'transparent', color: a ? 'var(--accent)' : 'var(--label)', onClick: () => this.setState({ phone:x[0] }) }; })
+    };
+  }
+}
+</script>
+</body>
+</html>
