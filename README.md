@@ -24,4 +24,4 @@ git add -A && git commit -m "docs: update site" && git push
 
 Pages redeploys in about a minute. GitHub's CDN may cache old HTML for up to 10 minutes.
 
-The pilot form has no backend (GitHub Pages is static); it validates input and opens a pre-filled email.
+The pilot form posts to [FormSubmit](https://formsubmit.co), which emails each application to the contact address (set in `tools/site_layout.py`). The first submission sends a one-time activation email that must be confirmed. If the request fails, the form offers a pre-filled email instead.
